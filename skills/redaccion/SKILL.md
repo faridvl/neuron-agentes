@@ -17,6 +17,13 @@ description: Revisa y corrige los textos visibles de una app (es.json, textos de
    escribir). En proyectos nuevos, el que diga el cerebro o el usuario. Nunca mezclar tratos ni usar voseo.
 2. **Corto y concreto.** Botones con verbo: "Guardar", "Agregar servicio". Títulos de 2 a 4
    palabras. Una idea por mensaje.
+   - Texto de ayuda bajo un título: una sola línea, 12 palabras como máximo. Si el título y el
+     botón ya lo explican, no va texto.
+   - Nunca dos párrafos en una tarjeta. Lo que explica una regla del negocio va en el lugar donde
+     se usa (al elegir, al guardar), no repetido en cada pantalla.
+   - Vacío: una frase de 8 palabras como máximo, más el botón que lo resuelve.
+   - Mídelo en el ancho real del dispositivo principal: si en la tableta ocupa más de 2 líneas,
+     está largo.
 3. **Errores que ayudan:** qué pasó y qué hacer. "No se pudo guardar. Revisa tu conexión e intenta
    de nuevo", no "Ha ocurrido un error inesperado".
 4. **Vacíos con salida:** "Aún no hay servicios" + acción, no "No hay datos disponibles".

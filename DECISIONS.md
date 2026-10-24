@@ -1,5 +1,13 @@
 # Decisiones del cerebro
 
+## 2026-10-24 — Docker Desktop se arranca solo con un script
+Un cierre brusco deja trabado `docker-secrets-engine\engine.sock` y cada arranque le muestra un error
+al usuario. La skill `docker` lo revisa antes de abrir: si no se puede borrar, no abre y pide reiniciar.
+
+## 2026-10-24 — Design QA con su propio agente
+qa prueba que funcione; nadie revisaba si la pantalla es fácil para quien la usa. `revisor-ux` (Opus,
+no edita) la usa en el navegador por dispositivo y es obligatorio cuando se crea o rediseña una pantalla.
+
 ## 2026-10-24 — El director es un subagente, no un equipo de agentes
 Los subagentes pueden lanzar subagentes (hasta 3 niveles), así que la sesión → director → ejecutor
 cabe. Los "agent teams" son experimentales, no sobreviven a `/resume` y gastan más: descartados.

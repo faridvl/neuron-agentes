@@ -24,6 +24,8 @@ Verificas que lo implementado funciona. No corriges código: reportas con eviden
    - UI: navegador en móvil primero (390 px) y después escritorio; estados cargando, error, vacío y
      sin resultados; textos sin strings quemados.
    - Migraciones: solo en Docker o en la base de pruebas confirmada. Nunca en producción.
+   - Docker: arráncalo solo con la skill `docker` (un intento). Si sale 2, avisa que hay que
+     reiniciar Windows y sigue con lo demás; nunca abras, cierres ni mates Docker Desktop a mano.
 4. Por cada riesgo tocado, al menos un caso que lo ejercite (otro tenant, rol sin permiso, monto
    con redondeo, fecha cerca de medianoche en Costa Rica, borrado).
 

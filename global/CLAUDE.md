@@ -69,6 +69,7 @@ guarda nombres, rutas ni datos de ningún proyecto.
 | `retro` | Detectar trabajo repetido que podría ser skill o agente |
 | `commit` | Antes de cualquier commit |
 | `entregar` | Subir a develop, abrir un PR o preparar el paso a main |
+| `docker` | Antes de usar Docker: se arranca solo con su script, nunca abriendo o matando Docker Desktop |
 
 Cada cerebro puede traer sus skills `estandares-proyecto`, `estandares-frontend` y `estandares-api`
 (mismos nombres, su stack). Si no existen, seguir el patrón del repo. Las reglas del repo mandan.
