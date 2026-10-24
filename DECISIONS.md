@@ -1,5 +1,13 @@
 # Decisiones del cerebro
 
+## 2026-10-24 — El instalador suma, no reemplaza
+El equipo instala el motor sobre configuraciones que ya tienen (reglas, agentes y skills propios). Reemplazar
+`~/.claude/CLAUDE.md` por un `@import` y `agents` por un junction les borraba todo. Ahora: CLAUDE.md lleva un
+bloque entre marcas al final, los agentes del motor y de los cerebros se copian a `agents/` con un manifiesto
+(`cerebro-agentes.json`) que es lo único que el instalador actualiza o borra, y una skill o agente propio con el
+mismo nombre nunca se pisa (se avisa). `-Desinstalar` revierte solo lo del motor. Además `limitar-agente.mjs
+--solo-docker` bloquea en el agente sandbox cualquier conexión SQL que no sea al equipo local.
+
 ## 2026-10-24 — Docker Desktop se arranca solo con un script
 Un cierre brusco deja trabado `docker-secrets-engine\engine.sock` y cada arranque le muestra un error
 al usuario. La skill `docker` lo revisa antes de abrir: si no se puede borrar, no abre y pide reiniciar.

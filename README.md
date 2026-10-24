@@ -63,4 +63,20 @@ git clone <remoto del motor> claude-brain
 
 - Sin `-Cerebros` funciona igual (agentes, reglas, permisos, tiempos); solo que no hay fichas.
 - Varias cuentas en la misma PC comparten `~/.claude`. Si una usa otra carpeta, pasar `-ConfigDir`.
-- El instalador respalda lo que reemplaza en `~/.claude/backups/pre-cerebro-<fecha>/`.
+- **Suma, no reemplaza**, y reinstalar da el mismo resultado:
+  - `CLAUDE.md`: tu contenido queda intacto; el motor mantiene al final un bloque entre
+    `<!-- claude-brain:inicio -->` y `<!-- claude-brain:fin -->` con los `@import` (reglas del motor y `reglas.md`
+    de cada cerebro).
+  - `agents/`: es tu carpeta. El motor copia ahí los agentes del motor y de los cerebros (el cerebro gana si
+    repiten nombre) y los anota en `~/.claude/cerebro-agentes.json`. Solo toca lo anotado; un agente tuyo con el
+    mismo nombre no se pisa (avisa).
+  - `skills/`: un junction por skill del motor y de cada cerebro; una skill tuya con el mismo nombre no se pisa.
+  - `settings.json`: se agregan hooks y permisos del motor; lo tuyo se queda.
+- Migración desde la versión vieja (CLAUDE.md de solo `@import`, `agents` como junction): se quita el junction,
+  se restauran tus agentes desde `~/.claude/backups/pre-cerebro-*` y se avisa dónde quedó tu CLAUDE.md original
+  (no se restaura solo).
+- Lo que se cambia se respalda en `~/.claude/backups/pre-cerebro-<fecha>/`.
+
+```powershell
+.\claude-brain\install.ps1 -Desinstalar   # quita bloque, agentes del manifiesto, enlaces de skills y hooks del motor
+```

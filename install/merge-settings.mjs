@@ -7,9 +7,23 @@ import { fileURLToPath } from 'node:url';
 
 const [, , destino, cerebro, raizProyectos, ...resto] = process.argv;
 const limpiar = resto.includes('--limpiar');
-const cerebros = resto.filter((valor) => valor !== '--limpiar');
+const desinstalar = resto.includes('--desinstalar');
+const cerebros = resto.filter((valor) => !valor.startsWith('--'));
 const cerebroPosix = cerebro.replace(/\\/g, '/');
 const leerJson = (ruta) => JSON.parse(fs.readFileSync(ruta, 'utf8').replace(/^﻿/, ''));
+
+const quitarHooksDelCerebro = (ruta) => {
+  const guardado = leerJson(ruta);
+  for (const [evento, grupos] of Object.entries(guardado.hooks ?? {})) {
+    const propios = grupos.filter((grupo) => !esHookDelCerebro(grupo));
+    if (propios.length) guardado.hooks[evento] = propios;
+    else delete guardado.hooks[evento];
+  }
+  if (guardado.hooks && !Object.keys(guardado.hooks).length) delete guardado.hooks;
+  fs.writeFileSync(ruta, `${JSON.stringify(guardado, null, 2)}
+`);
+  console.log('settings.json: hooks del motor quitados.');
+};
 
 const base = JSON.parse(
   JSON.stringify(leerJson(path.join(path.dirname(fileURLToPath(import.meta.url)), 'settings.base.json')))
@@ -21,6 +35,11 @@ const comandoHook = `node "${cerebroPosix}/hooks/cerebro.mjs"`;
 const union = (...listas) => [...new Set(listas.flat().filter(Boolean))];
 const esHookDelCerebro = (grupo) =>
   grupo.hooks?.some((hook) => hook.command?.includes('cerebro.mjs')) ?? false;
+
+if (desinstalar) {
+  quitarHooksDelCerebro(destino);
+  process.exit(0);
+}
 
 // Lo que pide permiso por Bash también lo pide por PowerShell.
 const espejoPowerShell = (reglas) =>
