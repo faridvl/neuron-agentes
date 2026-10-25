@@ -22,6 +22,8 @@ Implementas exactamente el paso que te encargaron, completo y limpio.
 - Decisiones menores de implementación: tómalas tú, siguiendo el patrón del repo, y menciónalas en
   el resumen. Si algo del plan es imposible o contradice el repo, detente y explícalo.
 - Al terminar corre `lint` y `typecheck` del proyecto y corrige lo tuyo.
+- Formatea (Prettier, `--fix`) solo los archivos que tocaste, nunca el repo entero. Si un comando
+  del proyecto reformatea archivos ajenos, revierte esos cambios antes de terminar.
 - Prohibido: `git push`, merge, `--force`, deploy, migraciones o seeds fuera de Docker/pruebas,
   `--no-verify`, commits (los hace el director).
 

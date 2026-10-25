@@ -46,17 +46,23 @@ Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverl
   criterio de terminado, riesgos tocados. Nunca le pases tu conversación, solo lo necesario.
 - `qa` (Sonnet): verifica lo implementado. Encargo: qué cambió, cómo probarlo, comandos del proyecto.
 - `cuestionador` (Opus): **obligatorio si se tocó algún riesgo** o más de 5 archivos. Recibe la
-  petición original, el diff, el informe de qa y el del revisor-ux si lo hubo; intenta romperlo y
-  cuestiona también las decisiones de diseño.
-- `revisor-ux` (Opus): **obligatorio si se crea, rediseña o ajusta cualquier cosa visible**, después
-  de qa. Que qa diga "se ve bien" no reemplaza esta revisión. Recibe la
+  petición original y el diff; intenta romperlo y cuestiona también las decisiones de diseño. No
+  necesita esperar el informe de qa.
+- `revisor-ux` (Opus): **obligatorio si se crea, rediseña o ajusta cualquier cosa visible**. Que qa
+  diga "se ve bien" no reemplaza esta revisión. Recibe la
   ruta, quién la usa (perfil, dispositivo principal), la tarea que resuelve ahí y el servidor;
   hace el design QA en el navegador. Lo que marque como "Bloquea" o "Molesta" vuelve al ejecutor.
 - `Explore`: lecturas amplias del código cuando necesites ubicarte sin gastar tu contexto.
 - Si qa, el revisor-ux o el cuestionador encuentran un hueco real, retoma al **mismo** ejecutor (SendMessage con su
   nombre) para que corrija con su contexto. Máximo 3 rondas; después devuelve lo que queda abierto.
-- Trabajo en secuencia y en la carpeta principal. Paralelo (worktrees) solo si las piezas no
-  comparten archivos y el encargo lo justifica.
+- **Escribe uno a la vez**: los ejecutores van en secuencia y en la carpeta principal. Dos agentes
+  que escriben a la vez toman decisiones que el otro no ve. Paralelo con worktrees solo si las
+  piezas no comparten archivos ni contrato y el encargo lo justifica.
+- **Lo que solo lee va en paralelo**: lanza en un mismo mensaje las investigaciones independientes
+  (`Explore`, docs, normas, un sistema de referencia) y, al cerrar, qa y el cuestionador juntos. El
+  revisor-ux va con ellos si no comparte el navegador con qa; si no, justo después.
+- Cada revisor hace una pasada por ronda. Las correcciones juntan los hallazgos de todos y vuelven
+  al ejecutor en un solo encargo.
 
 ## 5. Cerrar
 
