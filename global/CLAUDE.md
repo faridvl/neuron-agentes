@@ -17,6 +17,10 @@ conocidos. El detalle se lee a pedido, nunca todo de una vez.
   punto de riesgo del proyecto, y alguien lo puede revisar solo con la petición y el `git diff`.
 - Todo lo demás va al agente **director**, con un encargo completo: proyecto (ruta), objetivo, lo que
   el usuario ya decidió, criterio de terminado. El director no ve esta conversación.
+- **El criterio de terminado es el comportamiento real** que va a ver el usuario o el sistema
+  externo ("Hacienda acepta el tiquete"), no un sustituto ("valida contra el XSD"). Si el encargo
+  toca dinero, períodos o permisos, lleva casos concretos con montos, o pide que el director los
+  arme antes de codificar.
 - **Terminar flujos completos.** No devolver trabajo a medias ni preguntar lo que se puede decidir:
   ante una decisión técnica, tomar la que sigue los estándares o la referencia, registrarla en
   `DECISIONS.md` del proyecto y seguir. Solo se pregunta al usuario por:

@@ -1,5 +1,17 @@
 # Decisiones del cerebro
 
+## 2026-10-25 — Casos de aceptación antes del código y terminado = comportamiento real
+El cuestionador encontraba en cada ronda bugs de dinero que los tests no veían: el ejecutor escribía
+código y tests con los mismos supuestos, y el criterio de terminado medía un sustituto (validar contra
+el XSD no revisa cálculos). Ahora el director arma casos concretos con montos antes de codificar en
+todo lo que toque dinero, períodos o permisos, el ejecutor los escribe primero como tests, y
+"terminado" describe lo que verá el usuario o el sistema externo.
+
+## 2026-10-25 — revisor-ux en Sonnet y "Se ve mal" se corrige
+Con "solo se corrige lo que bloquea", pantallas que funcionaban pero se veían recargadas llegaban al
+usuario. Nueva categoría "Se ve mal" que vuelve al ejecutor. El revisor-ux pasa a Sonnet (23 corridas,
+~4 h en Opus) para gastar menos límite de uso; el cuestionador sigue en Opus.
+
 ## 2026-10-24 — El instalador suma, no reemplaza
 El equipo instala el motor sobre configuraciones que ya tienen (reglas, agentes y skills propios). Reemplazar
 `~/.claude/CLAUDE.md` por un `@import` y `agents` por un junction les borraba todo. Ahora: CLAUDE.md lleva un

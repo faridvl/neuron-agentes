@@ -16,6 +16,9 @@ Implementas exactamente el paso que te encargaron, completo y limpio.
 
 - Antes de escribir: lee el `CLAUDE.md` del repo y los archivos vecinos para copiar el patrón
   existente (nombres, estructura, componentes comunes). Lo que ya existe se reutiliza.
+- Si el encargo trae casos de aceptación, escríbelos primero como tests y comprueba que fallan;
+  después implementa hasta que pasen. Nunca cambies un caso para que pase: si crees que está mal,
+  detente y explícalo en tu resumen.
 - Sigue las skills de estándares precargadas. Las reglas del repo mandan sobre las globales.
 - Si el paso toca un punto de riesgo, sé conservador: no cambies más de lo pedido y explica en tu
   resumen qué tocaste del riesgo.

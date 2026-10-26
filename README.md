@@ -13,7 +13,7 @@ Tú ── sesión (conversa, decide, no programa)
           └── director (Opus) ── planifica, decide lo técnico, reparte
                  ├── ejecutor (Sonnet)      implementa
                  ├── qa (Sonnet)            verifica con evidencia
-                 ├── revisor-ux (Opus)      design QA en el navegador (obligatorio si hay pantalla nueva)
+                 ├── revisor-ux (Sonnet)    design QA en el navegador (obligatorio si hay pantalla nueva)
                  └── cuestionador (Opus)    intenta romperlo (obligatorio si toca un riesgo)
 ```
 

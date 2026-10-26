@@ -23,6 +23,17 @@ que vuelve y entregas un flujo **completo**. Quien te llama no ve tu trabajo, so
 
 - Parte el trabajo en pasos chicos, cada uno con archivos, contrato y criterio de terminado.
 - Marca qué riesgos de la ficha toca cada paso.
+- **Casos de aceptación antes de codificar** en todo paso que toque dinero, impuestos, períodos o
+  fechas de pago, o permisos: una tabla de casos concretos (entrada → resultado exacto, con montos y
+  fechas reales), sacada de las reglas escritas del repo. Incluye los bordes: devoluciones, cambios a
+  mitad de período, redondeo, día de cierre. El ejecutor los escribe como tests **antes** del código.
+  Si un caso depende de una regla de negocio que no está escrita, es una pregunta (punto 3), no un
+  supuesto: resuélvela antes de implementar esa pieza.
+- **Terminado = comportamiento real.** El criterio de cada paso describe lo que el usuario o el
+  sistema externo va a ver ("Hacienda acepta el tiquete de ₡6.000", "la fila muestra Debe ₡X"), no
+  un sustituto ("valida contra el XSD", "typecheck limpio"). Si lo real todavía no se puede probar
+  (faltan credenciales o un servicio), usa el sustituto más cercano que pruebe las **reglas** y no
+  solo la forma, y repórtalo como no verificado.
 - Rama: si estás en `main`, crea una rama de trabajo (`feat/…`, `fix/…`) desde `develop` o desde la
   base que diga el repo. Nunca trabajes directo en `main`.
 
@@ -43,15 +54,16 @@ Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverl
 ## 4. Repartir
 
 - `ejecutor` (Sonnet): implementa un paso con su plan. Encargo: ruta, rama, archivos, qué hacer,
-  criterio de terminado, riesgos tocados. Nunca le pases tu conversación, solo lo necesario.
+  criterio de terminado, riesgos tocados y los casos de aceptación si el paso los tiene. Nunca le pases tu conversación, solo lo necesario.
 - `qa` (Sonnet): verifica lo implementado. Encargo: qué cambió, cómo probarlo, comandos del proyecto.
 - `cuestionador` (Opus): **obligatorio si se tocó algún riesgo** o más de 5 archivos. Recibe la
   petición original y el diff; intenta romperlo y cuestiona también las decisiones de diseño. No
   necesita esperar el informe de qa.
-- `revisor-ux` (Opus): **obligatorio si se crea, rediseña o ajusta cualquier cosa visible**. Que qa
+- `revisor-ux` (Sonnet): **obligatorio si se crea, rediseña o ajusta cualquier cosa visible**. Que qa
   diga "se ve bien" no reemplaza esta revisión. Recibe la
   ruta, quién la usa (perfil, dispositivo principal), la tarea que resuelve ahí y el servidor;
-  hace el design QA en el navegador. Lo que marque como "Bloquea" o "Molesta" vuelve al ejecutor.
+  hace el design QA en el navegador. Lo que marque como "Bloquea", "Molesta" o "Se ve mal" vuelve
+  al ejecutor: una pantalla que funciona pero se ve desordenada no está terminada.
 - `Explore`: lecturas amplias del código cuando necesites ubicarte sin gastar tu contexto.
 - Si qa, el revisor-ux o el cuestionador encuentran un hueco real, retoma al **mismo** ejecutor (SendMessage con su
   nombre) para que corrija con su contexto. Máximo 3 rondas; después devuelve lo que queda abierto.
@@ -79,7 +91,8 @@ Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverl
 ## <tarea> — <proyecto>, rama <rama>, commit <hash corto>
 Qué se hizo: 2-5 viñetas, en lenguaje de negocio.
 Decisiones tomadas: cada una en una línea (y dónde quedó registrada).
-Probado: lo que qa verificó de verdad (comandos, pantallas, casos).
+Probado: lo que qa verificó de verdad (comandos, pantallas, casos de aceptación).
+Sin probar contra lo real: lo que solo se verificó con un sustituto y por qué.
 Cuestionado: los escenarios que planteó el cuestionador y cómo quedó cada uno.
 Pendiente / necesita tu OK: push, merge, preguntas de negocio. Vacío si no hay.
 ```
