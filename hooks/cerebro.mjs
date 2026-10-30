@@ -60,7 +60,7 @@ const parsearFicha = (archivo) => {
   return { ...campos, archivo };
 };
 
-// Cada cerebro (personal, de una empresa) aporta sus fichas sin mezclarse con los otros.
+// Cada neurona (personal, de una empresa) aporta sus fichas sin mezclarse con los otros.
 const cerebrosDe = (config) => (config.cerebros ?? []).filter((raiz) => fs.existsSync(raiz));
 
 const cargarFichas = (config) =>
@@ -121,8 +121,8 @@ const arranque = (entrada, config) => {
   const partes = [
     `Motor: ${MOTOR}`,
     cerebros.length
-      ? `Cerebros (fichas en proyectos/, aprendizajes/): ${cerebros.join(' · ')}`
-      : 'Sin cerebro instalado: no hay fichas de proyectos en esta máquina.',
+      ? `Neuronas (fichas en proyectos/, aprendizajes/): ${cerebros.join(' · ')}`
+      : 'Sin neurona instalada: no hay fichas de proyectos en esta máquina.',
   ];
   if (encontrado) {
     const { ficha, ruta } = encontrado;
@@ -152,8 +152,8 @@ const contextoSubagente = (entrada, config) => {
     : 'La carpeta actual no es un proyecto con ficha; el encargo dice cuál es.';
   const cerebros = cerebrosDe(config);
   const dondeBuscar = cerebros.length
-    ? `Cerebros del usuario (fichas en proyectos/, aprendizajes/): ${cerebros.join(' · ')}.`
-    : 'No hay cerebro instalado.';
+    ? `Neuronas del usuario (fichas en proyectos/, aprendizajes/): ${cerebros.join(' · ')}.`
+    : 'No hay neurona instalada.';
   return `${dondeBuscar} ${proyecto}`;
 };
 

@@ -14,7 +14,7 @@ description: Revisa y corrige los textos visibles de una app (es.json, textos de
 ## Reglas
 
 1. **Español de Costa Rica, con el trato que ya usa el proyecto** (mirar `es.json` antes de
-   escribir). En proyectos nuevos, el que diga el cerebro o el usuario. Nunca mezclar tratos ni usar voseo.
+   escribir). En proyectos nuevos, el que diga la neurona o el usuario. Nunca mezclar tratos ni usar voseo.
 2. **Corto y concreto.** Botones con verbo: "Guardar", "Agregar servicio". Títulos de 2 a 4
    palabras. Una idea por mensaje.
    - Texto de ayuda bajo un título: una sola línea, 12 palabras como máximo. Si el título y el

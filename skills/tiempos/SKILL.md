@@ -1,6 +1,6 @@
 ---
 name: tiempos
-description: Muestra cuánto tiempo real tomó el trabajo — por día, por proyecto, por agente y por tarea del director — a partir del registro que escriben los hooks del cerebro. Usar cuando el usuario pregunte cuánto tardó algo, cuánto trabajó en un proyecto, o pida un resumen de tiempos.
+description: Muestra cuánto tiempo real tomó el trabajo — por día, por proyecto, por agente y por tarea del director — a partir del registro que escriben los hooks del motor. Usar cuando el usuario pregunte cuánto tardó algo, cuánto trabajó en un proyecto, o pida un resumen de tiempos.
 ---
 
 # Tiempos

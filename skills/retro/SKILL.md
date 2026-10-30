@@ -19,7 +19,7 @@ description: Revisa lo que el usuario pidió en las sesiones recientes y detecta
    | Skill nueva | Es un procedimiento con pasos fijos (y quizá un script) |
    | Agente nuevo | Necesita contexto propio y juicio, y se repite en varios proyectos |
    | Script o comando | Es mecánico, sin juicio |
-   | Aprendizaje en el cerebro | Es una solución que se busca de nuevo en otro proyecto |
+   | Aprendizaje en la neurona | Es una solución que se busca de nuevo en otro proyecto |
 4. Revisa también `aprendizajes/` y las memorias de los agentes (`agent-memory/`): si un mismo
    error aparece en varias, es candidato a regla.
 5. Resultado: tabla corta (patrón · veces · proyectos · propuesta · esfuerzo) y las 3 mejores

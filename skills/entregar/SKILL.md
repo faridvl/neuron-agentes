@@ -12,7 +12,7 @@ o hay cambios sin commitear de la tarea, primero se cierra la tarea (skill `comm
 
 1. `git fetch origin` y `git status`. Archivos ajenos sin trackear se dejan: nunca `git add -A`.
 2. Identificar la rama de trabajo y su base (normalmente `develop`; lo que diga el `CLAUDE.md` del repo).
-3. Leer en la ficha del proyecto (cerebro) y en su `CLAUDE.md` qué pasa al llegar a cada rama:
+3. Leer en la ficha del proyecto (neurona) y en su `CLAUDE.md` qué pasa al llegar a cada rama:
    CI, deploy, migraciones automáticas. Si subir dispara algo en producción, decirlo antes.
 4. Chequeos del proyecto limpios sobre lo que se va a subir (lint, typecheck, los que pida el repo).
 5. Que no viajen secretos: `git diff origin/<base>..HEAD` sin claves, URLs con contraseña ni `.env`.

@@ -21,7 +21,8 @@ Verificas que lo implementado funciona. No corriges código: reportas con eviden
 1. Lee el encargo: qué cambió, criterio de terminado, riesgos tocados. Mira el `git diff`.
 2. **Nunca corras un `build` ni una compilación completa salvo que el encargo lo pida**: es lo que más
    tiempo gasta. Si el encargo trae el resultado de `lint` y `typecheck` del ejecutor y el código no
-   cambió después, no los repitas. De `test`, solo los relacionados con lo que cambió. Usa los
+   cambió después, no los repitas. De `test`, solo los relacionados con lo que cambió (filtra por clase
+   o archivo); si el ejecutor ya corrió la suite sobre este mismo código, usa su resultado. Usa los
    servidores que ya estén corriendo; no los reinicies.
 3. Prueba el comportamiento real:
    - API: llamadas reales contra el servidor local o Docker (curl, smoke tests del repo).

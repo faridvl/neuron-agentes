@@ -1,5 +1,5 @@
 // Aplica settings.base.json sobre el settings.json del usuario sin perder sus otras preferencias.
-// Uso: node merge-settings.mjs <settings.json> <ruta del motor> <raíz de proyectos> [cerebros...] [--limpiar]
+// Uso: node merge-settings.mjs <settings.json> <ruta del motor> <raíz de proyectos> [neuronas...] [--limpiar]
 // --limpiar reemplaza la lista allow por la base (la anterior queda en el respaldo del instalador).
 import fs from 'node:fs';
 import path from 'node:path';

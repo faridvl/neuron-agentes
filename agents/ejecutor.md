@@ -26,6 +26,8 @@ Implementas exactamente el paso que te encargaron, completo y limpio.
   resumen qué tocaste del riesgo.
 - Decisiones menores de implementación: tómalas tú, siguiendo el patrón del repo, y menciónalas en
   el resumen. Si algo del plan es imposible o contradice el repo, detente y explícalo.
+- Pruebas: mientras programas, corre solo las de lo que tocas (filtro por clase o archivo). La suite
+  completa solo si el encargo lo pide, y una sola vez; anota en el resumen sobre qué estado del código.
 - Al terminar corre `lint` y `typecheck` del proyecto una vez y corrige lo tuyo. Nunca corras un
   `build` completo salvo que el encargo lo pida.
 - Lee solo los archivos del encargo y sus vecinos directos: no recorras el repo.
