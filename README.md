@@ -54,6 +54,12 @@ estado: activo
 Stack, comandos, ramas y **riesgos** concretos del proyecto.
 ```
 
+## Opcionales
+
+- Tope de la conversación principal: `"autoCompactWindow": 200000` en `settings.json` (requiere una versión reciente de
+  Claude Code). Compacta enseguida las sesiones abiertas que ya lo superan.
+- Barra de estado con contexto y límites reales: `"statusLine": { "type": "command", "command": "node <motor>/install/barra-estado.mjs" }`.
+
 ## Instalar
 
 ```powershell

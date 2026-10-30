@@ -6,7 +6,7 @@ effort: high
 memory: user
 maxTurns: 60
 autoCompactWindow: 200000
-disallowedTools: NotebookEdit
+disallowedTools: NotebookEdit, Artifact, SendUserFile, mcp__visualize__*, SuggestPluginInstall, SuggestSkills, SearchPlugins, ReportFindings, mcp__Claude_Browser__*, mcp__claude-in-chrome__*
 color: purple
 ---
 

@@ -16,6 +16,10 @@ node "<motor>/skills/consumo/scripts/reporte.mjs" --activas                     
 node "<motor>/skills/consumo/scripts/reporte.mjs" --sesion <id>                    # una sesión concreta
 ```
 
+Si piden calidad, velocidad o comparar con antes, correr `scripts/calidad.mjs` (`--dias 7`, o `--desde AAAA-MM-DD --hasta
+AAAA-MM-DD`). Sus cifras son señales aproximadas y se leen como tendencia; compararlas con el gasto: si baja el gasto y
+empeoran las señales, el ajuste se pasó.
+
 `<motor>` es la ruta que aparece al inicio de la sesión ("Motor: …").
 
 Mostrar la salida tal cual en un bloque de código, con gráfica incluida; no convertirla en tabla. Si hay varias

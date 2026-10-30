@@ -1,5 +1,13 @@
 # Decisiones del motor
 
+## 2026-10-30 — Alertas de consumo y tope opcional en la conversación
+En las dos PCs, 4 días gastaron el 66% de 15, y 9 de cada 10 unidades fueron leer y escribir memoria, con contextos cercanos
+a 1 millón. La alerta es un hook y no una regla para que se cumpla siempre, y avisa una sola vez por umbral para no volverse
+ruido. `autoCompactWindow` en la conversación queda opcional (ver README): al aplicarse, compacta enseguida las sesiones
+abiertas que ya lo superan, y eso lo decide cada persona. Los agentes sí traen su tope. `disallowedTools` en vez de lista
+de permitidas: los conectores cambian entre PCs y olvidar una herramienta puede impedir que un agente termine.
+El filtro de pruebas no actúa con pipes ni redirecciones, y conserva el código de salida.
+
 ## 2026-10-30 — Repos y carpeta de trabajo con nombre propio
 Los repos pasan a `neuron-agentes` (motor) y `neuron-personal`, junto a `neuron-ld`. Las marcas
 `claude-brain:inicio` y `claude-brain:fin` de `CLAUDE.md` no cambian: el instalador las usa para encontrar su

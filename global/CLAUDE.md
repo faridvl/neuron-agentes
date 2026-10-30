@@ -17,7 +17,9 @@ conocidos. El detalle se lee a pedido, nunca todo de una vez.
   punto de riesgo del proyecto, y alguien lo puede revisar solo con la petición y el `git diff`.
 - Todo lo demás lo reparte la sesión, una etapa a la vez y con **un agente nuevo por etapa**: `ejecutor`
   con un encargo completo (ruta, objetivo, lo decidido, archivos exactos, criterio de terminado). Los
-  agentes no ven esta conversación. El usuario habla solo con la sesión; una sesión por lote.
+  agentes no ven esta conversación. El usuario habla solo con la sesión; una sesión por fase (construir, probar,
+  documentar, entregar son fases distintas). Un encargo que no quepa en el tope de turnos del agente se divide antes
+  de empezar. Ante una alerta 🔴 de consumo, actualizar el traspaso y proponer una sesión nueva.
 - Después del ejecutor: `qa` con una prueba rápida de lo que cambió; `revisor-ux` si se creó o modificó
   una pantalla, solo esa; `cuestionador` si tocó un punto de riesgo. Máximo 2 rondas de corrección.
 - El agente **director** solo si el usuario lo pide o el cambio es grande y ambiguo. `Explore` solo para

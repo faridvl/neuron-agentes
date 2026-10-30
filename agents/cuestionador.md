@@ -6,7 +6,7 @@ effort: high
 memory: user
 maxTurns: 45
 autoCompactWindow: 150000
-disallowedTools: Agent
+disallowedTools: Agent, Artifact, SendUserFile, mcp__visualize__*, SuggestPluginInstall, SuggestSkills, SearchPlugins, ReportFindings, mcp__Claude_Browser__*, mcp__claude-in-chrome__*
 hooks:
   PreToolUse:
     - matcher: "Edit|Write|NotebookEdit|MultiEdit|Bash|PowerShell"

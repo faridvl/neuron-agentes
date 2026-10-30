@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { alertaDe } from './alerta-consumo.mjs';
+import { comandoFiltrado } from './filtro-pruebas.mjs';
 
 const MOTOR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONFIG_DIR = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
@@ -191,11 +193,24 @@ try {
   const entrada = await leerStdin();
   const config = leerConfig();
   const evento = entrada.hook_event_name;
-  registrar(entrada, config);
-  if (evento === 'SessionStart') {
-    process.stdout.write(arranque(entrada, config));
+  // Corre en cada comando: no pasa por el registro de tiempos.
+  if (evento === 'PreToolUse') {
+    const command = comandoFiltrado(entrada.tool_input?.command);
+    if (command) {
+      process.stdout.write(
+        JSON.stringify({
+          hookSpecificOutput: { hookEventName: 'PreToolUse', updatedInput: { ...entrada.tool_input, command } },
+        }),
+      );
+    }
   } else {
-    if (evento === 'SubagentStart') {
+    registrar(entrada, config);
+    if (evento === 'Stop' || evento === 'SubagentStop') {
+      const aviso = alertaDe(entrada, path.join(MOTOR, 'registro', 'alertas'));
+      if (aviso) process.stdout.write(JSON.stringify({ systemMessage: aviso }));
+    } else if (evento === 'SessionStart') {
+      process.stdout.write(arranque(entrada, config));
+    } else if (evento === 'SubagentStart') {
       process.stdout.write(
         JSON.stringify({
           hookSpecificOutput: {

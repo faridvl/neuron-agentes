@@ -1,5 +1,4 @@
 {
-  "autoCompactWindow": 200000,
   "permissions": {
     "allow": [
       "Bash(git status*)",
@@ -106,6 +105,7 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [{ "matcher": "Bash", "hooks": [{ "type": "command", "command": "__HOOK__", "timeout": 10 }] }],
     "SessionStart": [{ "hooks": [{ "type": "command", "command": "__HOOK__", "timeout": 10 }] }],
     "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "__HOOK__", "timeout": 10 }] }],
     "Stop": [{ "hooks": [{ "type": "command", "command": "__HOOK__", "timeout": 10 }] }],

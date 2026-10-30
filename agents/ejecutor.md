@@ -10,7 +10,7 @@ skills:
   - estandares-frontend
   - estandares-api
   - estandares-proyecto
-disallowedTools: Agent
+disallowedTools: Agent, Artifact, SendUserFile, mcp__visualize__*, SuggestPluginInstall, SuggestSkills, SearchPlugins, ReportFindings
 color: green
 ---
 

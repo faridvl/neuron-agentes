@@ -6,7 +6,7 @@ effort: low
 memory: user
 maxTurns: 25
 autoCompactWindow: 150000
-disallowedTools: Agent
+disallowedTools: Agent, Artifact, SendUserFile, mcp__visualize__*, SuggestPluginInstall, SuggestSkills, SearchPlugins, ReportFindings
 hooks:
   PreToolUse:
     - matcher: "Edit|Write|NotebookEdit|MultiEdit"

@@ -68,8 +68,6 @@ for (const [evento, grupos] of Object.entries(base.hooks)) {
   hooks[evento] = [...propios, ...delCerebro];
 }
 actual.hooks = hooks;
-// Un valor propio del usuario se respeta.
-actual.autoCompactWindow ??= base.autoCompactWindow;
 
 fs.writeFileSync(destino, `${JSON.stringify(actual, null, 2)}\n`);
 console.log(`settings.json actualizado (${permisos.allow.length} allow, ${permisos.ask.length} ask).`);
