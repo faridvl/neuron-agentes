@@ -33,6 +33,10 @@ Cómo se calcula:
 - **Veredicto por etapa:** menos de 2 M BIEN, de 2 a 7 M CARO, más de 7 M MAL. Son referencias propias, no oficiales.
 - **Arranque por agente:** mediana de la memoria en la primera consulta de cada agente, por tipo y con la cantidad de
   agentes entre paréntesis. Sin veredicto hasta fijar metas con medidas reales.
+- **Por motivo:** suma el gasto de los agentes cuya `description` empieza con `corrección:` o `mejora:` (convención
+  desde la segunda ronda de un encargo). Se omite si ninguno la usa. `calidad.mjs` cuenta esos encargos.
+- **Agentes fuera de límite:** los que gastaron o llenaron su memoria por encima de lo esperado; `ninguno` no
+  significa que el gasto total esté bien, para eso está el veredicto.
 - **Últimas 5 horas:** una línea por cuenta, porque el límite es de cada una y pueden compartir esta carpeta. Solo
   cuenta lo de esta PC. No muestra un porcentaje porque el tope real no se conoce: el dato oficial está en `/usage`.
 

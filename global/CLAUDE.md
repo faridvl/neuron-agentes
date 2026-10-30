@@ -1,9 +1,8 @@
 # Reglas globales
 
 Motor: `neuron-agentes` (agentes, hooks, reglas de trabajo). Los datos viven en una o más **neuronas**
-(fichas de proyectos, aprendizajes, memoria de agentes, estándares del stack), cada una en su repo.
-Al iniciar, un hook inyecta "en titulares" el proyecto actual, su traspaso y la lista de proyectos
-conocidos. El detalle se lee a pedido, nunca todo de una vez.
+(fichas, aprendizajes, memoria de agentes, estándares del stack), cada una en su repo. Al iniciar, un
+hook inyecta "en titulares" el proyecto actual, su traspaso y los proyectos conocidos; el detalle se lee a pedido.
 
 ## Idioma
 
@@ -20,8 +19,12 @@ conocidos. El detalle se lee a pedido, nunca todo de una vez.
   agentes no ven esta conversación. El usuario habla solo con la sesión; una sesión por fase (construir, probar,
   documentar, entregar son fases distintas). Un encargo que no quepa en el tope de turnos del agente se divide antes
   de empezar. Ante una alerta 🔴 de consumo, actualizar el traspaso y proponer una sesión nueva.
-- Después del ejecutor: `qa` con una prueba rápida de lo que cambió; `revisor-ux` si se creó o modificó
-  una pantalla, solo esa; `cuestionador` si tocó un punto de riesgo. Máximo 2 rondas de corrección.
+- Orden después del `ejecutor` (que entrega con lint, typecheck y sus pruebas rápidas pasadas):
+  `cuestionador` si tocó un punto de riesgo → `revisor-ux` si cambió una pantalla (solo esa) → correcciones
+  juntas en un solo encargo → `qa` una sola vez, al final. Leer encuentra lo que probar no, y los arreglos
+  cambian lo que qa probaría. Máximo 2 rondas de corrección; cada una vuelve a probar solo lo que cambió.
+- Desde la segunda ronda, la `description` de cada encargo a un agente empieza con `corrección:` (un
+  error) o `mejora:` (algo nuevo que pide el usuario): `/consumo` los separa. Las mejoras se juntan en un lote.
 - El agente **director** solo si el usuario lo pide o el cambio es grande y ambiguo. `Explore` solo para
   ubicarse en código desconocido y con `model: haiku`.
 - El `build` completo nunca va por etapa: solo al cerrar el lote, si el repo lo usa.
@@ -35,29 +38,27 @@ conocidos. El detalle se lee a pedido, nunca todo de una vez.
   1. una regla de negocio que no está escrita y cambia el resultado;
   2. una acción que necesita su permiso (abajo);
   3. algo que contradice lo que pidió.
-- Puntos de riesgo de cada proyecto: en su ficha de la neurona (`proyectos/<proyecto>.md`). Si no
-  tiene ficha, usar los genéricos: esquema y migraciones, auth y aislamiento entre negocios,
-  dinero y facturación, datos sensibles, contratos de API, borrar datos, infra y deploy,
-  mensajes salientes a personas reales.
+- Puntos de riesgo: en la ficha del proyecto (`proyectos/<proyecto>.md`). Sin ficha, los genéricos:
+  esquema y migraciones, auth y aislamiento entre negocios, dinero y facturación, datos sensibles,
+  contratos de API, borrar datos, infra y deploy, mensajes salientes a personas reales.
 
 ## Solo con permiso explícito del usuario
 
 - `git push`, merge a `main`/`develop`, `--force`, rebase de ramas compartidas, cerrar o mergear PRs.
-- Deploy, migraciones o seeds sobre una base que no esté confirmada como de pruebas.
-- Borrar datos reales, enviar correos o mensajes a personas reales.
+- Deploy, migraciones o seeds sobre una base no confirmada como de pruebas; borrar datos reales; enviar
+  correos o mensajes a personas reales.
 - Commits locales en una rama de trabajo sí se hacen sin preguntar (nunca directo en `main`).
 
 ## Proyectos y retomar
 
-- Cuando el usuario nombra un proyecto (por nombre o por alias), ubicarlo
-  en la lista de proyectos inyectada al inicio, trabajar en su ruta y leer su ficha y su
-  `.claude/HANDOFF.md` antes de tocar nada. En la app de escritorio, mover la sesión a esa carpeta.
+- Cuando el usuario nombra un proyecto (nombre o alias), ubicarlo en la lista inyectada al inicio,
+  trabajar en su ruta y leer su ficha y su `.claude/HANDOFF.md` antes de tocar nada. En la app de
+  escritorio, mover la sesión a esa carpeta.
 - `.claude/HANDOFF.md` de cada repo (una página): qué quiere el usuario, reglas confirmadas, en qué
   estamos, qué sigue, preguntas abiertas. Se actualiza en el momento en que el usuario explica o
   decide algo y antes de cada commit. Lo cerrado pasa a `DECISIONS.md` y sale del traspaso.
 - Una sesión nueva por fase. Al retomar, resumir en tres líneas dónde quedamos antes de trabajar.
-- Los proyectos se adaptan al formato (CLAUDE.md índice, HANDOFF, ficha al día) **cuando se empieza a
-  trabajar en ellos**, como primer paso de esa tarea, no todos de una vez.
+- Los proyectos se adaptan al formato (CLAUDE.md índice, HANDOFF, ficha) **al empezar a trabajar en ellos**.
 
 ## Memoria: cada cosa en un solo lugar
 
@@ -92,13 +93,12 @@ Cada neurona puede traer sus skills `estandares-proyecto`, `estandares-frontend`
 
 - Comentar solo el **por qué** que no se deduce del código: una restricción, un workaround, una
   decisión no obvia. Una o dos líneas. Ante la duda, no comentar.
-- Nunca dejar contexto de la sesión: quién pidió qué, qué se descartó, fechas, conversaciones.
-  Tampoco conteos o resultados de una corrida ("241 de 250 pasaron"), relatos de depuración
-  ("encontramos que…") ni listas de archivos o IDs de un caso ya resuelto. Eso va en el commit o en el PR:
-  dentro del código envejece y no dice si sigue siendo cierto.
-- Una referencia a un ticket sí se permite, porque es un identificador estable.
-- Al revisar código, propio o ajeno, un comentario con fecha, conteo de una corrida o relato de la
-  sesión es un hallazgo que se corrige antes de dar el trabajo por terminado.
+- Nunca dejar contexto de la sesión: quién pidió qué, qué se descartó, fechas, conversaciones,
+  conteos o resultados de una corrida ("241 de 250 pasaron"), relatos de depuración ("encontramos
+  que…") ni listas de archivos o IDs de un caso resuelto. Eso va en el commit o el PR: en el código
+  envejece. Un ticket sí se permite (identificador estable).
+- Al revisar código, un comentario con fecha, conteo o relato de la sesión es un hallazgo que se
+  corrige antes de dar el trabajo por terminado.
 
 ## Cierre de cada fase o commit
 

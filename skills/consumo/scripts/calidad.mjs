@@ -10,6 +10,8 @@ const AGENTE_EN_CURSO_MS = 10 * 60 * 1000;
 const PATRON_LIMITE_USO = /You've hit your session limit/i;
 const PATRON_INTERRUMPIDO = /\[Request interrupted by user/i;
 const TIPOS_REVISION =['qa', 'revisor-ux', 'cuestionador'];
+const PATRON_CORRECCION = /^\s*correcci[oó]n:/i;
+const PATRON_MEJORA = /^\s*mejora:/i;
 const TIPOS_TIEMPO = ['ejecutor', 'qa', 'revisor-ux', 'cuestionador', 'director'];
 
 const argumento = (nombre, porDefecto) => {
@@ -72,11 +74,12 @@ const leer = (archivo) => {
   return datos;
 };
 
-const tipoDe = (archivo) => {
+const metaDe = (archivo) => {
   try {
-    return JSON.parse(fs.readFileSync(archivo.replace(/\.jsonl$/, '.meta.json'), 'utf8')).agentType ?? 'agente';
+    const meta = JSON.parse(fs.readFileSync(archivo.replace(/\.jsonl$/, '.meta.json'), 'utf8'));
+    return { tipo: meta.agentType ?? 'agente', encargo: meta.description ?? '' };
   } catch {
-    return 'agente';
+    return { tipo: 'agente', encargo: '' };
   }
 };
 
@@ -93,6 +96,7 @@ let sesionesConRevision = 0;
 let relecturas = 0;
 let agentes = 0;
 let cortados = 0;
+const encargosPorMotivo = { correcciones: 0, mejoras: 0 };
 const causas = { limite: 0, interrumpido: 0, otros: 0 };
 
 for (const carpeta of fs.existsSync(raiz) ? fs.readdirSync(raiz) : []) {
@@ -107,7 +111,7 @@ for (const carpeta of fs.existsSync(raiz) ? fs.readdirSync(raiz) : []) {
       : [];
     const hijos = lista
       .map((n) => path.join(carpetaAgentes, n))
-      .map((ruta) => ({ ...leer(ruta), tipo: tipoDe(ruta), mtime: fs.statSync(ruta).mtimeMs }))
+      .map((ruta) => ({ ...leer(ruta), ...metaDe(ruta), mtime: fs.statSync(ruta).mtimeMs }))
       .filter((a) => a.inicio >= desde && a.inicio <= hasta);
     const enRango = principal.fin >= desde && principal.inicio <= hasta;
     if (!enRango && !hijos.length) continue;
@@ -122,6 +126,8 @@ for (const carpeta of fs.existsSync(raiz) ? fs.readdirSync(raiz) : []) {
     }
     for (const a of hijos) {
       agentes++;
+      if (PATRON_CORRECCION.test(a.encargo)) encargosPorMotivo.correcciones++;
+      else if (PATRON_MEJORA.test(a.encargo)) encargosPorMotivo.mejoras++;
       relecturas += a.relecturas;
       if (a.avisado && a.herramientas && !a.entrego && Date.now() - a.mtime > AGENTE_EN_CURSO_MS) {
         cortados++;
@@ -157,6 +163,9 @@ console.log(`Calidad y velocidad · ${fecha(desde)} a ${fecha(hasta)} · ${sesio
 console.log(`Rondas de corrección por sesión revisada: ${sesionesConRevision ? (rondas / sesionesConRevision).toFixed(1) : 'sin datos'}`);
 console.log(`Relecturas tras compactar: ${relecturas}`);
 console.log(`Agentes sin entregar resultado: ${cortados} de ${agentes} (límite de uso ${causas.limite} · interrumpidos ${causas.interrumpido} · otros ${causas.otros})`);
+if (encargosPorMotivo.correcciones || encargosPorMotivo.mejoras) {
+  console.log(`Encargos por motivo: corrección ${encargosPorMotivo.correcciones} · mejora ${encargosPorMotivo.mejoras} (de ${agentes} agentes)`);
+}
 console.log(`Commits de corrección en esos repos: ${correcciones()}`);
 console.log('Tiempo activo mediano por agente:');
 for (const tipo of TIPOS_TIEMPO) {

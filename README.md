@@ -11,10 +11,11 @@ Tú ── sesión (conversa, decide, no programa)
           │  prueba de reanudación: ¿≤3 archivos, sin riesgo, revisable con el diff?
           │      sí → lo hace la sesión        no ↓
           └── un agente nuevo por etapa; director (Opus) solo a pedido o en cambios grandes y ambiguos
-                 ├── ejecutor (Sonnet)      implementa
-                 ├── qa (Sonnet)            verifica con evidencia
+                 ├── ejecutor (Sonnet)      implementa (entrega con lint, typecheck y pruebas rápidas)
+                 ├── cuestionador (Opus)    intenta romperlo (obligatorio si toca un riesgo)
                  ├── revisor-ux (Sonnet)    design QA en el navegador (obligatorio si hay pantalla nueva)
-                 └── cuestionador (Opus)    intenta romperlo (obligatorio si toca un riesgo)
+                 └── qa (Sonnet)            verifica con evidencia, una sola vez, al final
+                 (orden: ejecutor → cuestionador → revisor-ux → correcciones juntas → qa)
 ```
 
 - Cada agente arranca con contexto limpio: recibe su encargo y devuelve un resumen.

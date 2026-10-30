@@ -7,6 +7,11 @@ memory: user
 maxTurns: 60
 autoCompactWindow: 200000
 disallowedTools: NotebookEdit, Artifact, SendUserFile, mcp__visualize__*, SuggestPluginInstall, SuggestSkills, SearchPlugins, ReportFindings, mcp__Claude_Browser__*, mcp__claude-in-chrome__*
+hooks:
+  PostToolUse:
+    - hooks:
+        - type: command
+          command: node "$HOME/.claude/cerebro-hooks/aviso-tope.mjs"
 color: purple
 ---
 
@@ -55,31 +60,38 @@ Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverl
 
 ## 4. Repartir
 
+- Orden de cada etapa: `ejecutor` → `cuestionador` (si hay punto de riesgo) → `revisor-ux` (si cambió una
+  pantalla) → correcciones juntas → `qa` una sola vez, al final. Leer encuentra lo que probar no, y los
+  arreglos de las revisiones cambian lo que qa probaría.
 - `ejecutor` (Sonnet): implementa un paso con su plan. Encargo: ruta, rama, archivos, qué hacer,
-  criterio de terminado, riesgos tocados y los casos de aceptación si el paso los tiene. Nunca le pases tu conversación, solo lo necesario.
-- `qa` (Sonnet): verifica lo implementado. Encargo: qué cambió, cómo probarlo, comandos del proyecto,
-  y si el ejecutor ya corrió la suite completa sobre este mismo código (para que qa no la repita).
+  criterio de terminado, riesgos tocados y los casos de aceptación si el paso los tiene. Nunca le pases
+  tu conversación, solo lo necesario. Entrega con lint, typecheck y sus pruebas rápidas pasadas.
 - Pruebas: el ejecutor corre solo las de lo que toca mientras programa; la suite completa va una
   sola vez, al cerrar el lote.
-- `cuestionador` (Opus): **solo si se tocó un riesgo** (esquema, datos sensibles, permisos, dinero). Recibe la
-  petición original y el diff; intenta romperlo y cuestiona también las decisiones de diseño. No
-  necesita esperar el informe de qa.
-- `revisor-ux` (Sonnet): **si se crea o modifica una pantalla**, y solo esa pantalla. Que qa
-  diga "se ve bien" no reemplaza esta revisión. Recibe la
+- `cuestionador` (Opus): **solo si se tocó un riesgo** (esquema, datos sensibles, permisos, dinero). Recibe
+  la petición original, el diff y las decisiones anotadas (dato obligatorio, fecha, dinero, permisos);
+  intenta romperlo y cuestiona también las decisiones de diseño. Va antes de qa, que aún no probó.
+- `revisor-ux` (Sonnet): **si se crea o modifica una pantalla**, y solo esa pantalla. Recibe la
   ruta, quién la usa (perfil, dispositivo principal), la tarea que resuelve ahí y el servidor;
-  hace el design QA en el navegador. Lo que marque como "Bloquea", "Molesta" o "Se ve mal" vuelve
-  al ejecutor: una pantalla que funciona pero se ve desordenada no está terminada.
+  hace el design QA en el navegador, siempre con una pantalla baja de celular (375x600). Lo que marque
+  como "Bloquea", "Molesta" o "Se ve mal" vuelve al ejecutor: una pantalla que funciona pero se ve
+  desordenada no está terminada.
+- `qa` (Sonnet): **una sola vez, al final**, sobre el código ya corregido. Encargo: qué cambió, cómo
+  probarlo, comandos del proyecto, y si el ejecutor ya corrió la suite completa sobre este mismo código
+  (para que qa no la repita). En una ronda de corrección prueba solo lo que cambió.
 - `Explore` (siempre con `model: haiku`): solo para ubicarte en código que no conoces. Si ya sabes los archivos, no hace falta.
-- Si qa, el revisor-ux o el cuestionador encuentran un hueco real, retoma al **mismo** ejecutor (SendMessage con su
+- Si el cuestionador, el revisor-ux o qa encuentran un hueco real, retoma al **mismo** ejecutor (SendMessage con su
   nombre) para que corrija con su contexto. Máximo 2 rondas; después devuelve lo que queda abierto.
+- Desde la segunda ronda, la `description` de cada encargo empieza con `corrección:` (un error del
+  trabajo) o `mejora:` (algo nuevo que pide el usuario): `/consumo` separa ese gasto. Las mejoras que
+  pida el usuario se juntan en un lote, no una por una.
 - **Escribe uno a la vez**: los ejecutores van en secuencia y en la carpeta principal. Dos agentes
   que escriben a la vez toman decisiones que el otro no ve. Paralelo con worktrees solo si las
   piezas no comparten archivos ni contrato y el encargo lo justifica.
 - **Lo que solo lee va en paralelo**: lanza en un mismo mensaje las investigaciones independientes
-  (`Explore`, docs, normas, un sistema de referencia) y, al cerrar, qa y el cuestionador juntos. El
-  revisor-ux va con ellos si no comparte el navegador con qa; si no, justo después.
-- Cada revisor hace una pasada por ronda. Las correcciones juntan los hallazgos de todos y vuelven
-  al ejecutor en un solo encargo.
+  (`Explore`, docs, normas, un sistema de referencia). Los revisores van en el orden de arriba.
+- Cada revisor hace una pasada por ronda. Las correcciones juntan los hallazgos de los revisores y vuelven
+  al ejecutor en un solo encargo; después va qa.
 
 ## 5. Cerrar
 
