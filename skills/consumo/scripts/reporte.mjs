@@ -31,6 +31,7 @@ const argumento = (nombre, porDefecto) => {
   return i >= 0 ? process.argv[i + 1] : porDefecto;
 };
 const todas = process.argv.includes('--todas');
+const activas = process.argv.includes('--activas');
 const dias = Number(argumento('dias', 1));
 const etapas = Math.max(1, Number(argumento('etapas', 1)));
 const titulo = argumento('titulo', '');
@@ -223,6 +224,13 @@ const elegida = prefijoSesion
 
 if (!sesiones.length) {
   console.log('Sin sesiones en ese período. Si debería haberlas, el formato pudo cambiar: usar /usage.');
+} else if (activas) {
+  const conActividad = recientes.filter((s) => s.enVentana > 0);
+  if (!conActividad.length) console.log('Ninguna sesión trabajó en las últimas 5 horas.');
+  conActividad.forEach((sesion, i) => {
+    if (i) console.log('\n────────────────────\n');
+    reporteSesion(sesion, sesiones);
+  });
 } else if (todas) {
   reporteTodas(sesiones);
 } else if (!elegida) {

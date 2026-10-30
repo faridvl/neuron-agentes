@@ -12,6 +12,7 @@ node "<motor>/skills/consumo/scripts/reporte.mjs"                               
 node "<motor>/skills/consumo/scripts/reporte.mjs" --titulo "Proyecto · etapa 5"    # con nombre
 node "<motor>/skills/consumo/scripts/reporte.mjs" --etapas 3                       # sesión con varias etapas
 node "<motor>/skills/consumo/scripts/reporte.mjs" --todas --dias 1                 # todas las sesiones
+node "<motor>/skills/consumo/scripts/reporte.mjs" --activas                        # un resumen por cada sesión activa
 node "<motor>/skills/consumo/scripts/reporte.mjs" --sesion <id>                    # una sesión concreta
 ```
 
@@ -19,6 +20,8 @@ node "<motor>/skills/consumo/scripts/reporte.mjs" --sesion <id>                 
 
 Mostrar la salida tal cual en un bloque de código, con gráfica incluida; no convertirla en tabla. Si hay varias
 sesiones en la misma carpeta, toma la última que escribió: para otra, usar `--sesion`.
+
+"Activa" es una sesión que gastó algo en las últimas 5 horas: Claude no registra cuáles siguen abiertas.
 
 Cómo se calcula:
 - **Unidades (M = millones):** entrada ×1, lectura de memoria ×0.1, escritura de memoria ×2, respuesta ×5. No
