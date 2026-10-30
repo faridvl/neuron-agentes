@@ -12,6 +12,15 @@ Con "solo se corrige lo que bloquea", pantallas que funcionaban pero se veían r
 usuario. Nueva categoría "Se ve mal" que vuelve al ejecutor. El revisor-ux pasa a Sonnet (23 corridas,
 ~4 h en Opus) para gastar menos límite de uso; el cuestionador sigue en Opus.
 
+## 2026-10-30 — Agentes más livianos y medidos
+La sesión reparte con un agente nuevo por etapa y el director pasa a ser a pedido. En una sesión real
+los agentes gastaron el 92% del uso (director 25%, ~7 millones de unidades por etapa). Sonnet y
+esfuerzo menor en lo rutinario, `maxTurns` en todos, sin `build` por etapa, revisión solo de lo que
+cambió, y el cuestionador se queda en Opus pero solo en riesgos. `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`
+queda en 2 y no en 1 para que el director siga pudiendo repartir; los demás ya no pueden lanzar agentes
+(`disallowedTools: Agent`). La skill `consumo` mide cada agente leyendo sus transcripciones: el aviso
+de fin de agente no trae tokens y ese formato no es público, así que puede romperse con una actualización.
+
 ## 2026-10-24 — El instalador suma, no reemplaza
 El equipo instala el motor sobre configuraciones que ya tienen (reglas, agentes y skills propios). Reemplazar
 `~/.claude/CLAUDE.md` por un `@import` y `agents` por un junction les borraba todo. Ahora: CLAUDE.md lleva un

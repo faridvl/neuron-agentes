@@ -6,7 +6,7 @@ description: Sube trabajo ya terminado y probado — integrarlo en develop y hac
 # Entregar
 
 Toma trabajo **ya commiteado y verificado** y lo lleva a `develop` o a un PR. Si falta probar algo
-o hay cambios sin commitear de la tarea, primero se cierra la tarea (director o skill `commit`).
+o hay cambios sin commitear de la tarea, primero se cierra la tarea (skill `commit`).
 
 ## 0. Antes de cualquier modo
 

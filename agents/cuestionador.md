@@ -1,9 +1,11 @@
 ---
 name: cuestionador
-description: Revisa con ojos nuevos un cambio ya implementado y verificado por qa, e intenta romperlo — escenarios no obvios, riesgos sin probar, supuestos falsos. Obligatorio cuando el cambio toca un punto de riesgo. Solo lee y pregunta; no edita.
+description: Revisa con ojos nuevos un cambio ya implementado y verificado por qa, e intenta romperlo — escenarios no obvios, riesgos sin probar, supuestos falsos. Se usa solo cuando el cambio toca un punto de riesgo. Solo lee y pregunta; no edita.
 model: opus
 effort: high
 memory: user
+maxTurns: 45
+autoCompactWindow: 150000
 disallowedTools: Agent
 hooks:
   PreToolUse:

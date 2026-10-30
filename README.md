@@ -10,7 +10,7 @@ hooks y skills genéricas. **No contiene nada de ningún proyecto**: los datos v
 Tú ── sesión (conversa, decide, no programa)
           │  prueba de reanudación: ¿≤3 archivos, sin riesgo, revisable con el diff?
           │      sí → lo hace la sesión        no ↓
-          └── director (Opus) ── planifica, decide lo técnico, reparte
+          └── un agente nuevo por etapa; director (Opus) solo a pedido o en cambios grandes y ambiguos
                  ├── ejecutor (Sonnet)      implementa
                  ├── qa (Sonnet)            verifica con evidencia
                  ├── revisor-ux (Sonnet)    design QA en el navegador (obligatorio si hay pantalla nueva)

@@ -15,12 +15,18 @@ conocidos. El detalle se lee a pedido, nunca todo de una vez.
 - **La sesión conversa, no programa.** Entiende, decide qué hacer y delega. Solo edita ella misma
   lo que pasa la **prueba de reanudación**: se entiende leyendo 3 archivos o menos, no toca ningún
   punto de riesgo del proyecto, y alguien lo puede revisar solo con la petición y el `git diff`.
-- Todo lo demás va al agente **director**, con un encargo completo: proyecto (ruta), objetivo, lo que
-  el usuario ya decidió, criterio de terminado. El director no ve esta conversación.
+- Todo lo demás lo reparte la sesión, una etapa a la vez y con **un agente nuevo por etapa**: `ejecutor`
+  con un encargo completo (ruta, objetivo, lo decidido, archivos exactos, criterio de terminado). Los
+  agentes no ven esta conversación. El usuario habla solo con la sesión; una sesión por lote.
+- Después del ejecutor: `qa` con una prueba rápida de lo que cambió; `revisor-ux` si se creó o modificó
+  una pantalla, solo esa; `cuestionador` si tocó un punto de riesgo. Máximo 2 rondas de corrección.
+- El agente **director** solo si el usuario lo pide o el cambio es grande y ambiguo. `Explore` solo para
+  ubicarse en código desconocido y con `model: haiku`.
+- El `build` completo nunca va por etapa: solo al cerrar el lote, si el repo lo usa.
 - **El criterio de terminado es el comportamiento real** que va a ver el usuario o el sistema
   externo ("Hacienda acepta el tiquete"), no un sustituto ("valida contra el XSD"). Si el encargo
-  toca dinero, períodos o permisos, lleva casos concretos con montos, o pide que el director los
-  arme antes de codificar.
+  toca dinero, períodos o permisos, lleva casos concretos con montos, o pide que se
+  armen antes de codificar.
 - **Terminar flujos completos.** No devolver trabajo a medias ni preguntar lo que se puede decidir:
   ante una decisión técnica, tomar la que sigue los estándares o la referencia, registrarla en
   `DECISIONS.md` del proyecto y seguir. Solo se pregunta al usuario por:
@@ -70,6 +76,7 @@ guarda nombres, rutas ni datos de ningún proyecto.
 |---|---|
 | `redaccion` | Revisar textos visibles de una app o un diff de UI |
 | `tiempos` | Cuánto tardó cada tarea, por proyecto y agente |
+| `consumo` | Cuánto uso gastó cada agente y qué se pasó del presupuesto |
 | `retro` | Detectar trabajo repetido que podría ser skill o agente |
 | `commit` | Antes de cualquier commit |
 | `entregar` | Subir a develop, abrir un PR o preparar el paso a main |
@@ -86,6 +93,6 @@ Cada cerebro puede traer sus skills `estandares-proyecto`, `estandares-frontend`
 
 ## Cierre de cada fase o commit
 
-`lint`, `typecheck` y `build` limpios. Nunca `--no-verify`. Mensaje con la skill `commit`.
+`lint` y `typecheck` limpios (`build` solo al cerrar el lote, si el repo lo usa). Nunca `--no-verify`. Mensaje con la skill `commit`.
 `HANDOFF.md` al día. Si se aprendió algo que sirve en otros proyectos, va a `aprendizajes/` del cerebro
 del proyecto.
