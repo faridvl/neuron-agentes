@@ -34,6 +34,7 @@ const transcripcionDe = (entrada) => {
   if (entrada.agent_transcript_path) return entrada.agent_transcript_path;
   const principal = entrada.transcript_path;
   if (!principal || !entrada.agent_id) return null;
+  if (path.basename(principal) === `agent-${entrada.agent_id}.jsonl`) return principal;
   return path.join(principal.replace(/\.jsonl$/, ''), 'subagents', `agent-${entrada.agent_id}.jsonl`);
 };
 
