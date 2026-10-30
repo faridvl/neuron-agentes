@@ -84,6 +84,7 @@ const medir = (archivo) => {
     cuenta,
     ventanaPorCuenta,
     consultas: mensajes.length,
+    arranque: mensajes.length ? contexto(mensajes[0].uso) : 0,
     pico: Math.max(0, ...mensajes.map(({ uso }) => contexto(uso))),
     unidades: mensajes.reduce((total, { uso }) => total + pesar(uso), 0),
     enVentana: mensajes
@@ -185,6 +186,41 @@ const vigilar = (filas) =>
       return `${nombreGrupo(f.clave)}${f.description ? ` «${f.description}»` : ''}: ${motivo}`;
     });
 
+// Sin veredicto a propósito: las metas de arranque se fijan cuando haya medidas.
+const lineaArranque = (filas) => {
+  const porTipo = new Map();
+  for (const { clave, arranque } of filas) {
+    if (clave === CONVERSACION || !arranque) continue;
+    porTipo.set(clave, [...(porTipo.get(clave) ?? []), arranque]);
+  }
+  if (!porTipo.size) return null;
+  const partes = [...porTipo].map(([clave, medidas]) => {
+    const orden = medidas.sort((a, b) => a - b);
+    return `${clave} ${Math.round(orden[orden.length >> 1] / 1000)} mil (${orden.length})`;
+  });
+  return `Arranque por agente: ${partes.join(' · ')}`;
+};
+
+// La convención de la description de cada encargo separa el gasto de arreglar errores del de pedir cambios.
+const PATRON_CORRECCION = /^s*correcci[oó]n:/i;
+const PATRON_MEJORA = /^s*mejora:/i;
+
+const lineaCorreccionesYMejoras = (filas) => {
+  const suma = { correcciones: 0, mejoras: 0 };
+  const cuenta = { correcciones: 0, mejoras: 0 };
+  for (const { clave, description, unidades } of filas) {
+    if (clave === CONVERSACION || !description) continue;
+    const tipo = PATRON_CORRECCION.test(description) ? 'correcciones' : PATRON_MEJORA.test(description) ? 'mejoras' : null;
+    if (!tipo) continue;
+    suma[tipo] += unidades;
+    cuenta[tipo]++;
+  }
+  const partes = Object.keys(suma)
+    .filter((tipo) => cuenta[tipo])
+    .map((tipo) => `${tipo} ${millones(suma[tipo])} (${cuenta[tipo]})`);
+  return partes.length ? `Por motivo: ${partes.join(' · ')}` : null;
+};
+
 const nombreCuenta = (correo) => (correo ? correo.split('@')[0] : 'cuenta sin identificar');
 
 // El límite es de cada cuenta, y varias pueden compartir esta carpeta.
@@ -210,7 +246,11 @@ const reporteSesion = (sesion, sesiones) => {
   for (const linea of lineasVentana(sesiones)) console.log(linea);
   console.log(`Lo que más gastó: ${nombreGrupo(grupos[0].clave)}, ${millones(grupos[0].unidades)}`);
   const alertas = vigilar(sesion.filas);
-  console.log(`Para vigilar: ${alertas.length ? alertas.join(' · ') : 'nada'}`);
+  console.log(`Agentes fuera de límite: ${alertas.length ? alertas.join(' · ') : 'ninguno'}`);
+  const arranque = lineaArranque(sesion.filas);
+  if (arranque) console.log(arranque);
+  const motivos = lineaCorreccionesYMejoras(sesion.filas);
+  if (motivos) console.log(motivos);
   if (resultado !== 'BIEN') {
     console.log(`Qué hacer: ${GRUPOS[grupos[0].clave]?.consejo ?? 'revisar ese agente.'}`);
   }
@@ -224,6 +264,10 @@ const reporteTodas = (sesiones) => {
   console.log(`Todas las sesiones · últimos ${dias} ${dias === 1 ? 'día' : 'días'}`);
   console.log(`Gasto: ${millones(total)} en ${delPeriodo.length} ${delPeriodo.length === 1 ? 'sesión' : 'sesiones'}`);
   for (const linea of lineasVentana(sesiones)) console.log(linea);
+  const arranque = lineaArranque(delPeriodo.flatMap((s) => s.filas));
+  if (arranque) console.log(arranque);
+  const motivos = lineaCorreccionesYMejoras(delPeriodo.flatMap((s) => s.filas));
+  if (motivos) console.log(motivos);
   console.log('');
   for (const s of delPeriodo) {
     console.log(`${s.nombre} · ${s.id} · ${nombreCuenta(s.cuenta)} · ${millones(s.total)} — ${veredicto(s.total)}`);

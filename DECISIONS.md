@@ -1,5 +1,14 @@
 # Decisiones del motor
 
+## 2026-10-30 — Revisiones antes de qa, aviso de turnos y correcciones separadas de mejoras
+El orden pasa a ejecutor, cuestionador (si hay riesgo), revisor-ux (si hay pantalla), correcciones juntas y qa una sola
+vez al final: leer encuentra lo que probar no, y los arreglos de las revisiones cambian lo que qa probaría, así que
+probar antes era repetir. El ejecutor entrega con lint, typecheck y pruebas rápidas ya pasadas. El aviso de tope de
+turnos es un hook (`aviso-tope.mjs`) y no una regla para que se cumpla siempre; avisa una vez, sin subir topes.
+La `description` de los encargos desde la segunda ronda empieza con `corrección:` o `mejora:` para que `/consumo`
+muestre cuánto cuesta arreglar y cuánto cuesta pedir cambios. "Para vigilar: nada" pasa a "Agentes fuera de límite:
+ninguno" porque lo primero sonaba a que todo iba bien aunque el gasto fuera CARO.
+
 ## 2026-10-30 — Alertas de consumo y tope opcional en la conversación
 En las dos PCs, 4 días gastaron el 66% de 15, y 9 de cada 10 unidades fueron leer y escribir memoria, con contextos cercanos
 a 1 millón. La alerta es un hook y no una regla para que se cumpla siempre, y avisa una sola vez por umbral para no volverse

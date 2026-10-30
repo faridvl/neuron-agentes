@@ -195,7 +195,8 @@ try {
   const evento = entrada.hook_event_name;
   // Corre en cada comando: no pasa por el registro de tiempos.
   if (evento === 'PreToolUse') {
-    const command = comandoFiltrado(entrada.tool_input?.command);
+    // Sin esto, quitar el matcher reescribiría comandos de PowerShell con sintaxis de bash.
+    const command = entrada.tool_name === 'Bash' ? comandoFiltrado(entrada.tool_input?.command) : null;
     if (command) {
       process.stdout.write(
         JSON.stringify({

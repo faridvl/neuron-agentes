@@ -7,7 +7,11 @@ import path from 'node:path';
 const DIA_MS = 24 * 60 * 60 * 1000;
 const PAUSA_MS = 10 * 60 * 1000;
 const AGENTE_EN_CURSO_MS = 10 * 60 * 1000;
-const TIPOS_REVISION = ['qa', 'revisor-ux', 'cuestionador'];
+const PATRON_LIMITE_USO = /You've hit your session limit/i;
+const PATRON_INTERRUMPIDO = /\[Request interrupted by user/i;
+const TIPOS_REVISION =['qa', 'revisor-ux', 'cuestionador'];
+const PATRON_CORRECCION = /^\s*correcci[oó]n:/i;
+const PATRON_MEJORA = /^\s*mejora:/i;
 const TIPOS_TIEMPO = ['ejecutor', 'qa', 'revisor-ux', 'cuestionador', 'director'];
 
 const argumento = (nombre, porDefecto) => {
@@ -19,8 +23,21 @@ const desde = Date.parse(argumento('desde', '')) || Date.now() - dias * DIA_MS;
 const hasta = Date.parse(argumento('hasta', '')) || Date.now();
 const raiz = path.join(process.env.CLAUDE_CONFIG_DIR ?? path.join(os.homedir(), '.claude'), 'projects');
 
+const textoDe = (contenido) =>
+  typeof contenido === 'string'
+    ? contenido
+    : Array.isArray(contenido)
+      ? contenido.map((bloque) => (typeof bloque?.text === 'string' ? bloque.text : '')).join('\n')
+      : '';
+
+const causaDe = (texto) => {
+  if (PATRON_LIMITE_USO.test(texto)) return 'limite';
+  if (PATRON_INTERRUMPIDO.test(texto)) return 'interrumpido';
+  return 'otros';
+};
+
 const leer = (archivo) => {
-  const datos = { inicio: 0, fin: 0, activo: 0, relecturas: 0, herramientas: 0, entrego: false, avisado: false, cwd: '' };
+  const datos = { inicio: 0, fin: 0, activo: 0, relecturas: 0, herramientas: 0, entrego: false, avisado: false, cwd: '', ultimoTexto: '' };
   const leidos = new Set();
   let compactado = false;
   let anterior = 0;
@@ -34,6 +51,7 @@ const leer = (archivo) => {
       continue;
     }
     datos.cwd ||= j.cwd ?? '';
+    if (j.type === 'assistant' || j.type === 'user') datos.ultimoTexto = textoDe(j.message?.content);
     if (j.isCompactSummary || j.subtype === 'compact_boundary') compactado = true;
     const cuando = Date.parse(j.timestamp);
     if (cuando && j.message?.usage) {
@@ -56,11 +74,12 @@ const leer = (archivo) => {
   return datos;
 };
 
-const tipoDe = (archivo) => {
+const metaDe = (archivo) => {
   try {
-    return JSON.parse(fs.readFileSync(archivo.replace(/\.jsonl$/, '.meta.json'), 'utf8')).agentType ?? 'agente';
+    const meta = JSON.parse(fs.readFileSync(archivo.replace(/\.jsonl$/, '.meta.json'), 'utf8'));
+    return { tipo: meta.agentType ?? 'agente', encargo: meta.description ?? '' };
   } catch {
-    return 'agente';
+    return { tipo: 'agente', encargo: '' };
   }
 };
 
@@ -77,6 +96,8 @@ let sesionesConRevision = 0;
 let relecturas = 0;
 let agentes = 0;
 let cortados = 0;
+const encargosPorMotivo = { correcciones: 0, mejoras: 0 };
+const causas = { limite: 0, interrumpido: 0, otros: 0 };
 
 for (const carpeta of fs.existsSync(raiz) ? fs.readdirSync(raiz) : []) {
   const dir = path.join(raiz, carpeta);
@@ -90,7 +111,7 @@ for (const carpeta of fs.existsSync(raiz) ? fs.readdirSync(raiz) : []) {
       : [];
     const hijos = lista
       .map((n) => path.join(carpetaAgentes, n))
-      .map((ruta) => ({ ...leer(ruta), tipo: tipoDe(ruta), mtime: fs.statSync(ruta).mtimeMs }))
+      .map((ruta) => ({ ...leer(ruta), ...metaDe(ruta), mtime: fs.statSync(ruta).mtimeMs }))
       .filter((a) => a.inicio >= desde && a.inicio <= hasta);
     const enRango = principal.fin >= desde && principal.inicio <= hasta;
     if (!enRango && !hijos.length) continue;
@@ -105,8 +126,13 @@ for (const carpeta of fs.existsSync(raiz) ? fs.readdirSync(raiz) : []) {
     }
     for (const a of hijos) {
       agentes++;
+      if (PATRON_CORRECCION.test(a.encargo)) encargosPorMotivo.correcciones++;
+      else if (PATRON_MEJORA.test(a.encargo)) encargosPorMotivo.mejoras++;
       relecturas += a.relecturas;
-      if (a.avisado && a.herramientas && !a.entrego && Date.now() - a.mtime > AGENTE_EN_CURSO_MS) cortados++;
+      if (a.avisado && a.herramientas && !a.entrego && Date.now() - a.mtime > AGENTE_EN_CURSO_MS) {
+        cortados++;
+        causas[causaDe(a.ultimoTexto)]++;
+      }
       if (TIPOS_TIEMPO.includes(a.tipo)) (tiempos[a.tipo] ??= []).push(a.activo);
     }
   }
@@ -136,7 +162,10 @@ const fecha = (ms) => new Date(ms).toISOString().slice(0, 10);
 console.log(`Calidad y velocidad · ${fecha(desde)} a ${fecha(hasta)} · ${sesiones} sesiones, ${agentes} agentes`);
 console.log(`Rondas de corrección por sesión revisada: ${sesionesConRevision ? (rondas / sesionesConRevision).toFixed(1) : 'sin datos'}`);
 console.log(`Relecturas tras compactar: ${relecturas}`);
-console.log(`Agentes sin entregar resultado: ${cortados} de ${agentes}`);
+console.log(`Agentes sin entregar resultado: ${cortados} de ${agentes} (límite de uso ${causas.limite} · interrumpidos ${causas.interrumpido} · otros ${causas.otros})`);
+if (encargosPorMotivo.correcciones || encargosPorMotivo.mejoras) {
+  console.log(`Encargos por motivo: corrección ${encargosPorMotivo.correcciones} · mejora ${encargosPorMotivo.mejoras} (de ${agentes} agentes)`);
+}
 console.log(`Commits de corrección en esos repos: ${correcciones()}`);
 console.log('Tiempo activo mediano por agente:');
 for (const tipo of TIPOS_TIEMPO) {
