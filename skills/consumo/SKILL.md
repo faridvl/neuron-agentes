@@ -27,7 +27,7 @@ Cómo se calcula:
 - **Unidades (M = millones):** entrada ×1, lectura de memoria ×0.1, escritura de memoria ×2, respuesta ×5. No
   distingue el precio de cada modelo, así que Opus pesa más de lo que muestra.
 - **Veredicto por etapa:** menos de 2 M BIEN, de 2 a 7 M CARO, más de 7 M MAL. Son referencias propias, no oficiales.
-- **Últimas 5 horas:** suma todas las sesiones de esta configuración, porque el límite es de la cuenta. Los 15 M
-  son un cálculo aproximado; el dato oficial está en `/usage`.
+- **Últimas 5 horas:** una línea por cuenta, porque el límite es de cada una y pueden compartir esta carpeta. Solo
+  cuenta lo de esta PC. No muestra un porcentaje porque el tope real no se conoce: el dato oficial está en `/usage`.
 
 El formato de las transcripciones no es público: si el reporte sale vacío, avisarlo y usar `/usage` en la terminal.

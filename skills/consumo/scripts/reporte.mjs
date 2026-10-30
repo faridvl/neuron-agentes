@@ -8,13 +8,13 @@ const LIMITE_AGENTE = 1.5 * MILLON;
 const LIMITE_CONTEXTO = 150_000;
 const META_ETAPA = 2 * MILLON;
 const TOPE_ETAPA = 7 * MILLON;
-const MAXIMO_VENTANA = 15 * MILLON;
 const VENTANA_MS = 5 * 60 * 60 * 1000;
 const PESO_LECTURA = 0.1;
 const PESO_ESCRITURA = 2;
 const PESO_RESPUESTA = 5;
 const ANCHO_BARRA = 30;
 const CONVERSACION = 'conversacion';
+const PATRON_CUENTA = /email address is ([^\s"\\]+@[^\s"\\]+?)\.(?:\s|\\n| Use)/;
 
 const GRUPOS = {
   director: { nombre: 'Director', consejo: 'pedirlo solo en cambios grandes y ambiguos.' },
@@ -54,7 +54,9 @@ const contexto = (uso) =>
 const medir = (archivo) => {
   const porMensaje = new Map();
   let cwd = '';
+  let cuenta = '';
   for (const linea of fs.readFileSync(archivo, 'utf8').split('\n')) {
+    cuenta = linea.match(PATRON_CUENTA)?.[1] ?? cuenta;
     if (!cwd && linea.includes('"cwd"')) {
       try {
         cwd = JSON.parse(linea).cwd ?? '';
@@ -66,15 +68,21 @@ const medir = (archivo) => {
     try {
       const { message: mensaje, uuid, timestamp } = JSON.parse(linea);
       if (mensaje?.usage && mensaje.model !== '<synthetic>') {
-        porMensaje.set(mensaje.id ?? uuid, { uso: mensaje.usage, cuando: Date.parse(timestamp) });
+        porMensaje.set(mensaje.id ?? uuid, { uso: mensaje.usage, cuando: Date.parse(timestamp), cuenta });
       }
     } catch {
       // Una línea cortada por una escritura en curso no invalida el resto.
     }
   }
   const mensajes = [...porMensaje.values()];
+  const ventanaPorCuenta = {};
+  for (const { uso, cuando, cuenta: dueña } of mensajes) {
+    if (cuando >= inicioVentana) ventanaPorCuenta[dueña] = (ventanaPorCuenta[dueña] ?? 0) + pesar(uso);
+  }
   return {
     cwd,
+    cuenta,
+    ventanaPorCuenta,
     consultas: mensajes.length,
     pico: Math.max(0, ...mensajes.map(({ uso }) => contexto(uso))),
     unidades: mensajes.reduce((total, { uso }) => total + pesar(uso), 0),
@@ -135,6 +143,7 @@ const leerSesiones = () => {
         ultimo,
         total,
         enVentana: filas.reduce((suma, f) => suma + f.enVentana, 0),
+        cuenta: principal.cuenta,
         filas,
         nombre: path.basename(principal.cwd || carpeta),
       });
@@ -176,11 +185,19 @@ const vigilar = (filas) =>
       return `${nombreGrupo(f.clave)}${f.description ? ` «${f.description}»` : ''}: ${motivo}`;
     });
 
-const lineaVentana = (sesiones) => {
-  const gastado = sesiones.reduce((suma, s) => suma + s.enVentana, 0);
-  const parte = Math.round((gastado / MAXIMO_VENTANA) * 100);
-  const activas = sesiones.filter((s) => s.enVentana > 0).length;
-  return `Últimas 5 horas, ${activas} ${activas === 1 ? 'sesión' : 'sesiones'}: ${millones(gastado)} de unos ${millones(MAXIMO_VENTANA)} (${parte}%)`;
+const nombreCuenta = (correo) => (correo ? correo.split('@')[0] : 'cuenta sin identificar');
+
+// El límite es de cada cuenta, y varias pueden compartir esta carpeta.
+const lineasVentana = (sesiones) => {
+  const porCuenta = {};
+  for (const fila of sesiones.flatMap((s) => s.filas)) {
+    for (const [cuenta, gasto] of Object.entries(fila.ventanaPorCuenta)) {
+      porCuenta[cuenta] = (porCuenta[cuenta] ?? 0) + gasto;
+    }
+  }
+  const orden = Object.entries(porCuenta).sort((a, b) => b[1] - a[1]);
+  if (!orden.length) return ['Últimas 5 horas: sin gasto'];
+  return orden.map(([cuenta, gastado]) => `Últimas 5 horas, ${nombreCuenta(cuenta)}: ${millones(gastado)}`);
 };
 
 const reporteSesion = (sesion, sesiones) => {
@@ -188,9 +205,9 @@ const reporteSesion = (sesion, sesiones) => {
   const porEtapa = sesion.total / etapas;
   const resultado = veredicto(porEtapa);
   const notaEtapas = etapas > 1 ? ` en ${etapas} etapas, ${millones(porEtapa)} por etapa` : '';
-  console.log(`${titulo || sesion.nombre} · sesión ${sesion.id}`);
+  console.log(`${titulo || sesion.nombre} · sesión ${sesion.id} · ${nombreCuenta(sesion.cuenta)}`);
   console.log(`Gasto: ${millones(sesion.total)}${notaEtapas} — ${resultado} (meta: ${millones(META_ETAPA)} por etapa)`);
-  console.log(lineaVentana(sesiones));
+  for (const linea of lineasVentana(sesiones)) console.log(linea);
   console.log(`Lo que más gastó: ${nombreGrupo(grupos[0].clave)}, ${millones(grupos[0].unidades)}`);
   const alertas = vigilar(sesion.filas);
   console.log(`Para vigilar: ${alertas.length ? alertas.join(' · ') : 'nada'}`);
@@ -206,10 +223,10 @@ const reporteTodas = (sesiones) => {
   const total = delPeriodo.reduce((suma, s) => suma + s.total, 0);
   console.log(`Todas las sesiones · últimos ${dias} ${dias === 1 ? 'día' : 'días'}`);
   console.log(`Gasto: ${millones(total)} en ${delPeriodo.length} ${delPeriodo.length === 1 ? 'sesión' : 'sesiones'}`);
-  console.log(lineaVentana(sesiones));
+  for (const linea of lineasVentana(sesiones)) console.log(linea);
   console.log('');
   for (const s of delPeriodo) {
-    console.log(`${s.nombre} · ${s.id} · ${millones(s.total)} — ${veredicto(s.total)}`);
+    console.log(`${s.nombre} · ${s.id} · ${nombreCuenta(s.cuenta)} · ${millones(s.total)} — ${veredicto(s.total)}`);
   }
   console.log('');
   for (const linea of grafica(agrupar(delPeriodo.flatMap((s) => s.filas)), total)) console.log(linea);
