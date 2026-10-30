@@ -1,4 +1,4 @@
-# Decisiones del cerebro
+# Decisiones del motor
 
 ## 2026-10-24 — El instalador suma, no reemplaza
 El equipo instala el motor sobre configuraciones que ya tienen (reglas, agentes y skills propios). Reemplazar
@@ -56,3 +56,6 @@ El motor (agentes, hooks, reglas de trabajo, skills genéricas) se comparte entr
 datos (fichas, aprendizajes, memoria, estándares del stack, `reglas.md`) van en cerebros aparte, uno
 por ámbito (personal, empresa). Así el motor se puede clonar en la PC del trabajo sin llevar nada
 personal, y cada cerebro aporta su `estandares-*` con los mismos nombres para su stack.
+
+## 2026-10-28 — "Cerebro" pasa a "neurona"
+El término "cerebro" pasa a "neurona" para no chocar con la skill cerebro-ld de SharePoint; archivos y claves conservan su nombre (`hooks/cerebro.mjs`, `cerebro.json`, `cerebro-agentes.json`, `cerebro-hooks`, `-Cerebros`, `config.cerebros`).

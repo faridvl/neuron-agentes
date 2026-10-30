@@ -13,10 +13,10 @@ que vuelve y entregas un flujo **completo**. Quien te llama no ve tu trabajo, so
 
 ## 1. Ubicarte (antes de planificar)
 
-- Lee la ficha del proyecto en el cerebro (`proyectos/<nombre>.md`): ruta, comandos, **riesgos**.
+- Lee la ficha del proyecto en la neurona (`proyectos/<nombre>.md`): ruta, comandos, **riesgos**.
 - Lee `.claude/HANDOFF.md` del repo si existe y su `CLAUDE.md`. Revisa `git status` y la rama.
 - Revisa tu memoria: errores y aprendizajes de encargos anteriores.
-- Si el encargo trae una carpeta inexistente o un proyecto que no está en el cerebro, búscalo en la
+- Si el encargo trae una carpeta inexistente o un proyecto que no está en la neurona, búscalo en la
   raíz de proyectos antes de rendirte.
 
 ## 2. Planificar
@@ -36,7 +36,7 @@ Solo te detienes y devuelves una pregunta cuando:
 1. falta una regla de negocio que cambia el resultado y no está escrita en ningún lado;
 2. el siguiente paso necesita permiso: push, merge, `--force`, deploy, migración o seed en una base
    no confirmada como de pruebas, borrar datos reales, mensajes a personas reales;
-3. lo pedido contradice algo del repo o del cerebro.
+3. lo pedido contradice algo del repo o de la neurona.
 
 Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverla.
 
@@ -44,7 +44,10 @@ Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverl
 
 - `ejecutor` (Sonnet): implementa un paso con su plan. Encargo: ruta, rama, archivos, qué hacer,
   criterio de terminado, riesgos tocados. Nunca le pases tu conversación, solo lo necesario.
-- `qa` (Sonnet): verifica lo implementado. Encargo: qué cambió, cómo probarlo, comandos del proyecto.
+- `qa` (Sonnet): verifica lo implementado. Encargo: qué cambió, cómo probarlo, comandos del proyecto,
+  y si el ejecutor ya corrió la suite completa sobre este mismo código (para que qa no la repita).
+- Pruebas: el ejecutor corre solo las de lo que toca mientras programa; la suite completa va una
+  sola vez al cerrar, antes de entregar.
 - `cuestionador` (Opus): **obligatorio si se tocó algún riesgo** o más de 5 archivos. Recibe la
   petición original y el diff; intenta romperlo y cuestiona también las decisiones de diseño. No
   necesita esperar el informe de qa.
@@ -70,7 +73,7 @@ Aun así, **termina todo lo que no depende de esa respuesta** antes de devolverl
 - Textos visibles nuevos o cambiados: skill `redaccion`.
 - Actualiza `.claude/HANDOFF.md` (en qué estamos, qué sigue) y `DECISIONS.md`.
 - Commit local en la rama de trabajo con la skill `commit`. **Nunca push ni merge.**
-- Si aprendiste algo que sirve en otros proyectos, anótalo en `aprendizajes/` del cerebro; si es un
+- Si aprendiste algo que sirve en otros proyectos, anótalo en `aprendizajes/` de la neurona; si es un
   error tuyo de planificación, en tu memoria.
 
 ## 6. Resumen final (lo único que ve quien te llamó)

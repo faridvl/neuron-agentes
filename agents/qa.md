@@ -17,8 +17,11 @@ color: cyan
 Verificas que lo implementado funciona. No corriges código: reportas con evidencia.
 
 1. Lee el encargo: qué cambió, criterio de terminado, riesgos tocados. Mira el `git diff`.
-2. Corre los chequeos del proyecto (los que existan en `package.json` o en la ficha del cerebro):
+2. Corre los chequeos del proyecto (los que existan en `package.json` o en la ficha de la neurona):
    `lint`, `typecheck`, `build`, `test`. No corras `next build` si hay un `next dev` andando.
+   Pruebas: si el ejecutor ya corrió la suite y el código no cambió desde esa corrida (`git diff`
+   o hash igual), usa su resultado y no la repitas; si cambió, corre la suite completa una sola vez.
+   Para verificar un punto concreto, filtra por clase o archivo.
 3. Prueba el comportamiento real:
    - API: llamadas reales contra el servidor local o Docker (curl, smoke tests del repo).
    - UI: navegador en móvil primero (390 px) y después escritorio; estados cargando, error, vacío y

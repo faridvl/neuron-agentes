@@ -1,5 +1,5 @@
 ﻿<#
-Instala el motor (y los cerebros que se indiquen) en la configuración de Claude Code. Suma, no reemplaza:
+Instala el motor (y las neuronas que se indiquen) en la configuración de Claude Code. Suma, no reemplaza:
 lo propio del usuario (CLAUDE.md, agentes, skills, settings.json) se queda como está. Idempotente.
 
   .\install.ps1 -RaizProyectos "D:\Documentos\Proyectos" -Cerebros "E:\Proyectos\claude-brain-personal"
@@ -8,10 +8,10 @@ lo propio del usuario (CLAUDE.md, agentes, skills, settings.json) se queda como 
 
 -Cerebros        repos de datos (fichas, aprendizajes, memoria, estándares). El primero guarda la
                  memoria de los agentes salvo que se indique -MemoriaAgentes.
--Adoptar         copia al primer cerebro las skills locales que todavía no estén en ningún repo.
+-Adoptar         copia a la primera neurona las skills locales que todavía no estén en ningún repo.
 -LimpiarPermisos reemplaza las listas allow y ask de settings.json por las del motor.
 -Desinstalar     quita el bloque de CLAUDE.md, los agentes del manifiesto, los junctions de skills del
-                 motor/cerebros y los hooks del motor. No toca nada más.
+                 motor/neuronas y los hooks del motor. No toca nada más.
 #>
 param(
   [string]$RaizProyectos = '',
@@ -73,7 +73,7 @@ function Enlazar($enlace, $destino) {
 # Una skill propia (carpeta real) nunca se pisa.
 function Enlazar-Skill($enlace, $destino) {
   if ((Test-Path $enlace) -and -not (Es-Enlace $enlace)) {
-    $Avisos.Add("Skill propia conservada, no se enlazó la del motor/cerebro con el mismo nombre: $(Split-Path $enlace -Leaf)")
+    $Avisos.Add("Skill propia conservada, no se enlazó la del motor/neurona con el mismo nombre: $(Split-Path $enlace -Leaf)")
     return
   }
   Enlazar $enlace $destino
@@ -196,7 +196,7 @@ if ($Desinstalar) {
 # ------------------------------------------------------------------- Instalar
 New-Item -ItemType Directory -Force -Path $skillsConfig, (Join-Path $Motor 'registro') | Out-Null
 
-# 1. Skills locales que todavía no viven en ningún repo van al primer cerebro.
+# 1. Skills locales que todavía no viven en ningún repo van a la primera neurona.
 if ($Adoptar -and $Cerebros.Count) {
   Get-ChildItem $skillsConfig -Directory |
     Where-Object { $Excluidas -notcontains $_.Name -and -not (Es-Enlace $_.FullName) } |
@@ -210,7 +210,7 @@ if ($Adoptar -and $Cerebros.Count) {
     }
 }
 
-# 2. Skills del motor y de cada cerebro. Si dos traen el mismo nombre, gana el cerebro (va después).
+# 2. Skills del motor y de cada neurona. Si dos traen el mismo nombre, gana la neurona (va después).
 Get-ChildItem $skillsConfig -Directory |
   Where-Object { (Es-Enlace $_.FullName) -and -not (Test-Path (Destino-Enlace $_.FullName)) } |
   ForEach-Object { $_.Delete(); Write-Host "Quitada (ya no existe): $($_.Name)" }
@@ -235,7 +235,7 @@ if (Es-Enlace $agentesDir) {
   if ($previo) {
     Get-ChildItem (Join-Path $previo.FullName 'agents') -Filter '*.md' -File | ForEach-Object {
       if ($deseados.Contains($_.Name)) {
-        $Avisos.Add("Agente propio del respaldo no restaurado (mismo nombre que uno del motor/cerebro): $($_.Name) en $($previo.FullName)\agents")
+        $Avisos.Add("Agente propio del respaldo no restaurado (mismo nombre que uno del motor/neurona): $($_.Name) en $($previo.FullName)\agents")
       } else {
         Copy-Item $_.FullName -Destination (Join-Path $agentesDir $_.Name)
         Write-Host "Agente propio restaurado: $($_.Name)"
@@ -255,7 +255,7 @@ foreach ($nombre in $deseados.Keys) {
   $destino = Join-Path $agentesDir $nombre
   $hashOrigen = Hash-Archivo $origen
   if ((Test-Path $destino) -and -not $manifiesto.ContainsKey($nombre) -and (Hash-Archivo $destino) -ne $hashOrigen) {
-    $Avisos.Add("Agente propio conservado, no se pisó (mismo nombre que uno del motor/cerebro): $nombre")
+    $Avisos.Add("Agente propio conservado, no se pisó (mismo nombre que uno del motor/neurona): $nombre")
     continue
   }
   if (-not (Test-Path $destino) -or (Hash-Archivo $destino) -ne $hashOrigen) {
@@ -271,7 +271,7 @@ foreach ($nombre in $manifiesto.Keys) {
 }
 Escribir-Manifiesto $nuevoManifiesto
 
-# Memoria de agentes en el cerebro (nunca en el motor, que se publica).
+# Memoria de agentes en la neurona (nunca en el motor, que se publica).
 if (-not $MemoriaAgentes) {
   $MemoriaAgentes = if ($Cerebros.Count) { Join-Path $Cerebros[0] 'agent-memory' } else { Join-Path $Motor 'agent-memory' }
 }
@@ -281,7 +281,7 @@ Enlazar-Memoria (Join-Path $ConfigDir 'agent-memory') $MemoriaAgentes
 New-Item -ItemType Directory -Force -Path $hooksHome | Out-Null
 Enlazar (Join-Path $hooksHome 'cerebro-hooks') (Join-Path $Motor 'hooks')
 
-# 4. CLAUDE.md: lo del usuario intacto + un bloque entre marcas con los @import del motor y los cerebros.
+# 4. CLAUDE.md: lo del usuario intacto + un bloque entre marcas con los @import del motor y las neuronas.
 $imports = @('@' + ((Join-Path $Motor 'global\CLAUDE.md') -replace '\\', '/'))
 foreach ($raiz in $Cerebros) {
   $reglas = Join-Path $raiz 'reglas.md'
@@ -319,7 +319,7 @@ if ($LASTEXITCODE -ne 0) { throw 'No se pudo actualizar settings.json' }
 
 Write-Host ''
 Write-Host "Motor instalado en $ConfigDir"
-if ($Cerebros.Count) { Write-Host "Cerebros: $($Cerebros -join ', ')" } else { Write-Host 'Sin cerebros: no habrá fichas de proyectos.' }
+if ($Cerebros.Count) { Write-Host "Neuronas: $($Cerebros -join ', ')" } else { Write-Host 'Sin neuronas: no habrá fichas de proyectos.' }
 if (Test-Path $Respaldo) { Write-Host "Respaldo de lo anterior: $Respaldo" }
 foreach ($aviso in $Avisos) { Write-Host "AVISO: $aviso" -ForegroundColor Yellow }
 Write-Host 'Abrir una sesión nueva para que tome los cambios.'

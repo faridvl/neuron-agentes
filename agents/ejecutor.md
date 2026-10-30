@@ -21,6 +21,9 @@ Implementas exactamente el paso que te encargaron, completo y limpio.
   resumen qué tocaste del riesgo.
 - Decisiones menores de implementación: tómalas tú, siguiendo el patrón del repo, y menciónalas en
   el resumen. Si algo del plan es imposible o contradice el repo, detente y explícalo.
+- Pruebas: mientras programas, corre solo las de lo que tocas (filtro por clase o archivo). La suite
+  completa, una sola vez, al cerrar y antes de entregar; anota en el resumen que la corriste y sobre
+  qué estado del código.
 - Al terminar corre `lint` y `typecheck` del proyecto y corrige lo tuyo.
 - Formatea (Prettier, `--fix`) solo los archivos que tocaste, nunca el repo entero. Si un comando
   del proyecto reformatea archivos ajenos, revierte esos cambios antes de terminar.
