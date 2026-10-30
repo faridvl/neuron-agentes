@@ -84,6 +84,7 @@ const medir = (archivo) => {
     cuenta,
     ventanaPorCuenta,
     consultas: mensajes.length,
+    arranque: mensajes.length ? contexto(mensajes[0].uso) : 0,
     pico: Math.max(0, ...mensajes.map(({ uso }) => contexto(uso))),
     unidades: mensajes.reduce((total, { uso }) => total + pesar(uso), 0),
     enVentana: mensajes
@@ -185,6 +186,21 @@ const vigilar = (filas) =>
       return `${nombreGrupo(f.clave)}${f.description ? ` «${f.description}»` : ''}: ${motivo}`;
     });
 
+// Sin veredicto a propósito: las metas de arranque se fijan cuando haya medidas.
+const lineaArranque = (filas) => {
+  const porTipo = new Map();
+  for (const { clave, arranque } of filas) {
+    if (clave === CONVERSACION || !arranque) continue;
+    porTipo.set(clave, [...(porTipo.get(clave) ?? []), arranque]);
+  }
+  if (!porTipo.size) return null;
+  const partes = [...porTipo].map(([clave, medidas]) => {
+    const orden = medidas.sort((a, b) => a - b);
+    return `${clave} ${Math.round(orden[orden.length >> 1] / 1000)} mil (${orden.length})`;
+  });
+  return `Arranque por agente: ${partes.join(' · ')}`;
+};
+
 const nombreCuenta = (correo) => (correo ? correo.split('@')[0] : 'cuenta sin identificar');
 
 // El límite es de cada cuenta, y varias pueden compartir esta carpeta.
@@ -211,6 +227,8 @@ const reporteSesion = (sesion, sesiones) => {
   console.log(`Lo que más gastó: ${nombreGrupo(grupos[0].clave)}, ${millones(grupos[0].unidades)}`);
   const alertas = vigilar(sesion.filas);
   console.log(`Para vigilar: ${alertas.length ? alertas.join(' · ') : 'nada'}`);
+  const arranque = lineaArranque(sesion.filas);
+  if (arranque) console.log(arranque);
   if (resultado !== 'BIEN') {
     console.log(`Qué hacer: ${GRUPOS[grupos[0].clave]?.consejo ?? 'revisar ese agente.'}`);
   }
@@ -224,6 +242,8 @@ const reporteTodas = (sesiones) => {
   console.log(`Todas las sesiones · últimos ${dias} ${dias === 1 ? 'día' : 'días'}`);
   console.log(`Gasto: ${millones(total)} en ${delPeriodo.length} ${delPeriodo.length === 1 ? 'sesión' : 'sesiones'}`);
   for (const linea of lineasVentana(sesiones)) console.log(linea);
+  const arranque = lineaArranque(delPeriodo.flatMap((s) => s.filas));
+  if (arranque) console.log(arranque);
   console.log('');
   for (const s of delPeriodo) {
     console.log(`${s.nombre} · ${s.id} · ${nombreCuenta(s.cuenta)} · ${millones(s.total)} — ${veredicto(s.total)}`);

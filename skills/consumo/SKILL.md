@@ -31,6 +31,8 @@ Cómo se calcula:
 - **Unidades (M = millones):** entrada ×1, lectura de memoria ×0.1, escritura de memoria ×2, respuesta ×5. No
   distingue el precio de cada modelo, así que Opus pesa más de lo que muestra.
 - **Veredicto por etapa:** menos de 2 M BIEN, de 2 a 7 M CARO, más de 7 M MAL. Son referencias propias, no oficiales.
+- **Arranque por agente:** mediana de la memoria en la primera consulta de cada agente, por tipo y con la cantidad de
+  agentes entre paréntesis. Sin veredicto hasta fijar metas con medidas reales.
 - **Últimas 5 horas:** una línea por cuenta, porque el límite es de cada una y pueden compartir esta carpeta. Solo
   cuenta lo de esta PC. No muestra un porcentaje porque el tope real no se conoce: el dato oficial está en `/usage`.
 
