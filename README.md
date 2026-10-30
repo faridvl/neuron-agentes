@@ -1,4 +1,4 @@
-# claude-brain (motor)
+# neuron-agentes (motor)
 
 Forma de trabajar con Claude Code, portable a cualquier PC y cuenta: reglas globales, agentes,
 hooks y skills genéricas. **No contiene nada de ningún proyecto**: los datos van en uno o más
@@ -57,8 +57,8 @@ Stack, comandos, ramas y **riesgos** concretos del proyecto.
 ## Instalar
 
 ```powershell
-git clone <remoto del motor> claude-brain
-.\claude-brain\install.ps1 -RaizProyectos "<raíz de proyectos>" [-Cerebros "<neurona>", "<otro>"]
+git clone <remoto del motor> neuron-agentes
+.\neuron-agentes\install.ps1 -RaizProyectos "<raíz de proyectos>" [-Cerebros "<neurona>", "<otro>"]
 ```
 
 - El parámetro conserva el nombre `-Cerebros` (así no se rompen instalaciones previas). Sin él funciona igual (agentes, reglas, permisos, tiempos); solo que no hay fichas.
@@ -78,5 +78,5 @@ git clone <remoto del motor> claude-brain
 - Lo que se cambia se respalda en `~/.claude/backups/pre-cerebro-<fecha>/`.
 
 ```powershell
-.\claude-brain\install.ps1 -Desinstalar   # quita bloque, agentes del manifiesto, enlaces de skills y hooks del motor
+.\neuron-agentes\install.ps1 -Desinstalar   # quita bloque, agentes del manifiesto, enlaces de skills y hooks del motor
 ```

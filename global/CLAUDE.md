@@ -1,6 +1,6 @@
 # Reglas globales
 
-Motor: `claude-brain` (agentes, hooks, reglas de trabajo). Los datos viven en una o más **neuronas**
+Motor: `neuron-agentes` (agentes, hooks, reglas de trabajo). Los datos viven en una o más **neuronas**
 (fichas de proyectos, aprendizajes, memoria de agentes, estándares del stack), cada una en su repo.
 Al iniciar, un hook inyecta "en titulares" el proyecto actual, su traspaso y la lista de proyectos
 conocidos. El detalle se lee a pedido, nunca todo de una vez.
@@ -101,4 +101,4 @@ Cada neurona puede traer sus skills `estandares-proyecto`, `estandares-frontend`
 
 `lint` y `typecheck` limpios (`build` solo al cerrar el lote, si el repo lo usa). Nunca `--no-verify`. Mensaje con la skill `commit`.
 `HANDOFF.md` al día. Si se aprendió algo que sirve en otros proyectos, va a `aprendizajes/` de la neurona
-del proyecto.
+del proyecto. Al cerrar cada etapa, mostrar el reporte de la skill `consumo`.

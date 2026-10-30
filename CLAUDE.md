@@ -1,4 +1,4 @@
-# claude-brain
+# neuron-agentes
 
 Repo del motor: la configuración global de Claude Code del usuario. Ver `README.md`.
 

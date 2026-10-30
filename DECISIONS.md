@@ -1,5 +1,11 @@
 # Decisiones del motor
 
+## 2026-10-30 — Repos y carpeta de trabajo con nombre propio
+Los repos pasan a `neuron-agentes` (motor) y `neuron-personal`, junto a `neuron-ld`. Las marcas
+`claude-brain:inicio` y `claude-brain:fin` de `CLAUDE.md` no cambian: el instalador las usa para encontrar su
+bloque en lo ya instalado. Las sesiones se abren en una carpeta de trabajo que no es repo ni proyecto, así no
+arrancan vinculadas a ninguno.
+
 ## 2026-10-25 — Casos de aceptación antes del código y terminado = comportamiento real
 El cuestionador encontraba en cada ronda bugs de dinero que los tests no veían: el ejecutor escribía
 código y tests con los mismos supuestos, y el criterio de terminado medía un sustituto (validar contra

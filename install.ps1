@@ -2,7 +2,7 @@
 Instala el motor (y las neuronas que se indiquen) en la configuración de Claude Code. Suma, no reemplaza:
 lo propio del usuario (CLAUDE.md, agentes, skills, settings.json) se queda como está. Idempotente.
 
-  .\install.ps1 -RaizProyectos "D:\Documentos\Proyectos" -Cerebros "E:\Proyectos\claude-brain-personal"
+  .\install.ps1 -RaizProyectos "D:\Documentos\Proyectos" -Cerebros "E:\Proyectos\neuron-personal"
   .\install.ps1 -RaizProyectos "C:\Trabajo"                      # solo el motor, sin fichas
   .\install.ps1 -Desinstalar                                     # quita solo lo que puso el motor
 
