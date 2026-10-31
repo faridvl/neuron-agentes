@@ -52,7 +52,8 @@ hook inyecta "en titulares" el proyecto actual, su traspaso y los proyectos cono
 ## Proyectos y retomar
 
 - Cuando el usuario nombra un proyecto (nombre o alias), ubicarlo en la lista inyectada al inicio,
-  trabajar en su ruta y leer su ficha y su `.claude/HANDOFF.md` antes de tocar nada. En la app de
+  trabajar en su ruta y leer su ficha, su `.claude/HANDOFF.md` y el `reglas.md` de su neurona
+  (si el hook no lo inyectó ya) antes de tocar nada. En la app de
   escritorio, mover la sesión a esa carpeta.
 - `.claude/HANDOFF.md` de cada repo (una página): qué quiere el usuario, reglas confirmadas, en qué
   estamos, qué sigue, preguntas abiertas. Se actualiza en el momento en que el usuario explica o

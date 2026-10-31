@@ -35,7 +35,7 @@ Una neurona tiene esta forma:
 
 ```
 mi-neurona/
-├── reglas.md          reglas propias de sus proyectos (se importan en cada sesión)
+├── reglas.md          reglas propias de sus proyectos (el hook las inyecta en sesiones y agentes de sus proyectos)
 ├── proyectos/<x>.md   ficha: frontmatter nombre, carpeta, alias, resumen, estado + riesgos y comandos
 ├── aprendizajes/      soluciones que sirven en más de un proyecto
 ├── agent-memory/      lo que aprenden los agentes
@@ -72,8 +72,9 @@ git clone <remoto del motor> neuron-agentes
 - Varias cuentas en la misma PC comparten `~/.claude`. Si una usa otra carpeta, pasar `-ConfigDir`.
 - **Suma, no reemplaza**, y reinstalar da el mismo resultado:
   - `CLAUDE.md`: tu contenido queda intacto; el motor mantiene al final un bloque entre
-    `<!-- claude-brain:inicio -->` y `<!-- claude-brain:fin -->` con los `@import` (reglas del motor y `reglas.md`
-    de cada neurona).
+    `<!-- claude-brain:inicio -->` y `<!-- claude-brain:fin -->` con el `@import` de las reglas del motor. El
+    `reglas.md` de cada neurona no se importa: `hooks/cerebro.mjs` lo inyecta al arrancar una sesión o un agente
+    en un proyecto de esa neurona.
   - `agents/`: es tu carpeta. El motor copia ahí los agentes del motor y de las neuronas (la neurona gana si
     repiten nombre) y los anota en `~/.claude/cerebro-agentes.json`. Solo toca lo anotado; un agente tuyo con el
     mismo nombre no se pisa (avisa).

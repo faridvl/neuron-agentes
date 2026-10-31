@@ -281,12 +281,9 @@ Enlazar-Memoria (Join-Path $ConfigDir 'agent-memory') $MemoriaAgentes
 New-Item -ItemType Directory -Force -Path $hooksHome | Out-Null
 Enlazar (Join-Path $hooksHome 'cerebro-hooks') (Join-Path $Motor 'hooks')
 
-# 4. CLAUDE.md: lo del usuario intacto + un bloque entre marcas con los @import del motor y las neuronas.
+# 4. CLAUDE.md: lo del usuario intacto + un bloque entre marcas con el @import del motor.
+# El reglas.md de cada neurona no se importa: el hook lo inyecta según el proyecto.
 $imports = @('@' + ((Join-Path $Motor 'global\CLAUDE.md') -replace '\\', '/'))
-foreach ($raiz in $Cerebros) {
-  $reglas = Join-Path $raiz 'reglas.md'
-  if (Test-Path $reglas) { $imports += '@' + ($reglas -replace '\\', '/') }
-}
 $bloque = $MarcaInicio + "`n" + ($imports -join "`n") + "`n" + $MarcaFin
 $actual = Leer-Texto $claudeMd
 $lineas = @($actual.Texto -split "\r?\n" | Where-Object { $_.Trim() })

@@ -1,4 +1,5 @@
-// Hook único del motor: arranque en titulares, contexto para subagentes y registro de tiempos.
+// Hook único del motor: arranque en titulares, reglas de la neurona del proyecto, contexto para
+// subagentes y registro de tiempos.
 // Nunca debe romper una sesión: cualquier error se traga y sale con código 0.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -116,6 +117,47 @@ const titularesHandoff = (rutaRepo) => {
   return `Traspaso (${archivo}), extracto:\n${extracto}`;
 };
 
+const neuronaDe = (ficha, config) => {
+  const archivo = normalizar(ficha.archivo);
+  return cerebrosDe(config).find((raiz) => archivo.startsWith(`${normalizar(raiz)}/`)) ?? null;
+};
+
+const leerReglas = (raiz) => {
+  try {
+    return fs.readFileSync(path.join(raiz, 'reglas.md'), 'utf8').trim() || null;
+  } catch {
+    return null;
+  }
+};
+
+// Sin proyecto no se sabe qué neurona aplica: se dice dónde están para leerlas antes de trabajar.
+const avisoReglas = (config) => {
+  const archivos = cerebrosDe(config)
+    .map((raiz) => path.join(raiz, 'reglas.md'))
+    .filter((archivo) => fs.existsSync(archivo));
+  return archivos.length
+    ? `Antes de trabajar en un proyecto, leer el reglas.md de su neurona: ${archivos.join(' · ')}`
+    : null;
+};
+
+const reglasParaProyecto = (encontrado, config) => {
+  const raiz = encontrado ? neuronaDe(encontrado.ficha, config) : null;
+  const reglas = raiz ? leerReglas(raiz) : null;
+  return raiz && reglas ? { raiz, texto: `Reglas de la neurona ${raiz}:\n${reglas}` } : null;
+};
+
+const marcadorReglas = (sesion, raiz) => {
+  const limpio = (texto) => texto.replace(/[^\w.-]/g, '_');
+  return path.join(MOTOR, 'registro', 'reglas', `${limpio(sesion)}-${limpio(path.basename(raiz))}`);
+};
+
+const marcarReglas = (sesion, raiz) => {
+  if (!sesion) return;
+  const archivo = marcadorReglas(String(sesion), raiz);
+  fs.mkdirSync(path.dirname(archivo), { recursive: true });
+  fs.writeFileSync(archivo, '');
+};
+
 const arranque = (entrada, config) => {
   const fichas = cargarFichas(config);
   const encontrado = detectarProyecto(entrada.cwd, fichas, config);
@@ -133,8 +175,15 @@ const arranque = (entrada, config) => {
       `Ficha (riesgos y comandos): ${ficha.archivo}`,
       titularesHandoff(raizDelRepo(entrada.cwd, ruta)),
     );
+    const reglas = reglasParaProyecto(encontrado, config);
+    if (reglas) {
+      partes.push(reglas.texto);
+      marcarReglas(entrada.session_id, reglas.raiz);
+    }
   } else {
     partes.push('Proyecto actual: ninguno reconocido en esta carpeta.');
+    const aviso = avisoReglas(config);
+    if (aviso) partes.push(aviso);
   }
   if (!fichas.length) return partes.join('\n');
   const lista = fichas
@@ -156,7 +205,18 @@ const contextoSubagente = (entrada, config) => {
   const dondeBuscar = cerebros.length
     ? `Neuronas del usuario (fichas en proyectos/, aprendizajes/): ${cerebros.join(' · ')}.`
     : 'No hay neurona instalada.';
-  return `${dondeBuscar} ${proyecto}`;
+  const reglas = encontrado ? reglasParaProyecto(encontrado, config)?.texto : avisoReglas(config);
+  return [`${dondeBuscar} ${proyecto}`, reglas].filter(Boolean).join('\n');
+};
+
+// Para sesiones que cambian de carpeta: las reglas de una neurona se inyectan una vez por sesión.
+const reglasPendientes = (entrada, config) => {
+  if (!entrada.session_id) return null;
+  const encontrado = detectarProyecto(entrada.cwd, cargarFichas(config), config);
+  const reglas = reglasParaProyecto(encontrado, config);
+  if (!reglas || fs.existsSync(marcadorReglas(String(entrada.session_id), reglas.raiz))) return null;
+  marcarReglas(entrada.session_id, reglas.raiz);
+  return reglas.texto;
 };
 
 const registrar = (entrada, config) => {
@@ -211,6 +271,15 @@ try {
       if (aviso) process.stdout.write(JSON.stringify({ systemMessage: aviso }));
     } else if (evento === 'SessionStart') {
       process.stdout.write(arranque(entrada, config));
+    } else if (evento === 'UserPromptSubmit') {
+      const reglas = reglasPendientes(entrada, config);
+      if (reglas) {
+        process.stdout.write(
+          JSON.stringify({
+            hookSpecificOutput: { hookEventName: 'UserPromptSubmit', additionalContext: reglas },
+          }),
+        );
+      }
     } else if (evento === 'SubagentStart') {
       process.stdout.write(
         JSON.stringify({

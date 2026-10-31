@@ -1,5 +1,15 @@
 # Decisiones del motor
 
+## 2026-10-31 — Las reglas de cada neurona se inyectan por proyecto, no se importan
+`~/.claude/CLAUDE.md` importaba el `reglas.md` de todas las neuronas, así que una sesión de un proyecto personal cargaba
+las reglas del equipo de la empresa y al revés, en cada mensaje y en cada agente. Ahora el bloque importa solo
+`global/CLAUDE.md` y `hooks/cerebro.mjs` inyecta el `reglas.md` de la neurona del proyecto (la que contiene su ficha):
+en SessionStart (también tras compactar) y en SubagentStart, y en UserPromptSubmit una sola vez por sesión y neurona
+(marcador en `registro/reglas/`) para las sesiones que cambian de carpeta. Es un hook y no una regla para que se cumpla
+siempre. Costo aceptado: en la carpeta neutral, o sin proyecto reconocido, no se carga ninguna; solo se avisa dónde
+están y dependen de que se lean a pedido antes de trabajar en un proyecto. También se acortaron las `description` de
+las skills más largas, que se pagan en cada sesión.
+
 ## 2026-10-30 — Revisiones antes de qa, aviso de turnos y correcciones separadas de mejoras
 El orden pasa a ejecutor, cuestionador (si hay riesgo), revisor-ux (si hay pantalla), correcciones juntas y qa una sola
 vez al final: leer encuentra lo que probar no, y los arreglos de las revisiones cambian lo que qa probaría, así que
