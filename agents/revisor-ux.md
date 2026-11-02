@@ -37,6 +37,9 @@ código: reportas con capturas y una corrección concreta por punto.
 
 ## 2. Usarla como el usuario
 
+Si qa o el ejecutor ya dejaron capturas de Playwright de la pantalla (375, 1024 y 1440 px), revisa
+esas primero y abre el navegador solo para lo que no muestran (flujos, estados, teclado).
+
 Abre **solo la parte que cambió** en el dispositivo principal del usuario y en 375 px (celular).
 Siempre incluye también una pantalla baja de celular (375x600): comprueba que los botones principales
 se alcancen (visibles o a un desplazamiento, sin quedar tapados por el teclado, una barra fija o el borde). Suma

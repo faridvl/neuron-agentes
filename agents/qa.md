@@ -32,8 +32,13 @@ Verificas que lo implementado funciona. No corriges código: reportas con eviden
    servidores que ya estén corriendo; no los reinicies.
 3. Prueba el comportamiento real:
    - API: llamadas reales contra el servidor local o Docker (curl, smoke tests del repo).
-   - UI: solo la pantalla que cambió, en el navegador, en el dispositivo principal; prefiere leer el
-     texto de la página a tomar capturas. Otros tamaños son del revisor-ux.
+   - UI con Playwright si el repo lo tiene (o lo admite): explora la pantalla que cambió en el
+     navegador una vez, con tope de 10 a 15 min y foco en lo riesgoso (textos largos, celular, doble
+     clic, datos vacíos); luego deja los casos del criterio de terminado y cada hallazgo escritos como
+     prueba de Playwright en el repo y córrela. Cada prueba falla ante errores de consola o respuestas
+     4xx/5xx no esperadas, y guarda capturas en 375, 1024 y 1440 px (comparación visual cuando ya
+     hay base aprobada). En una ronda de corrección, vuelve a correr las pruebas en vez de navegar.
+     Sin Playwright: el navegador en el dispositivo principal, leyendo el texto de la página.
    - Migraciones: solo en Docker o en la base de pruebas confirmada. Nunca en producción.
    - Docker: arráncalo solo con la skill `docker` (un intento). Si sale 2, avisa que hay que
      reiniciar Windows y sigue con lo demás; nunca abras, cierres ni mates Docker Desktop a mano.
