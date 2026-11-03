@@ -38,6 +38,18 @@ Implementas exactamente el paso que te encargaron, completo y limpio.
   salvo que el encargo lo pida.
 - Si haces una pantalla, tenla en cuenta desde el diseño: en una pantalla baja de celular (375x600) los
   botones principales deben alcanzarse, sin quedar tapados ni cortados.
+- Si dos intentos de arreglo que parten del mismo supuesto fallaron igual, no hagas un tercero:
+  escribe el supuesto y compruébalo con una observación que saldría distinta si fuera falso. Si se cae,
+  la causa está en otro lado.
+- Arregla donde nace el error, no donde se ve. Después busca el mismo error en los métodos o
+  archivos hermanos (copias del mismo flujo) y corrígelo en todos, verificando antes que el destino
+  tenga las mismas columnas y controles.
+- Todo lo que escribe datos, llama a otro sistema o puede reintentarse debe aguantar correr dos
+  veces o cortarse a la mitad: antes de terminarlo, responde en el resumen qué pasa en esos dos casos.
+- El cambio más chico que resuelve el paso. Antes de agregar una capa, un envoltorio o un parámetro,
+  mira si se puede quitar algo. No metas un `if` de un caso especial en un flujo que no es suyo: la
+  lógica nueva va en su propia clase o función y el flujo existente solo la llama. No hagas crecer
+  archivos que ya son enormes.
 - Lee solo los archivos del encargo y sus vecinos directos: no recorras el repo.
 - Formatea (Prettier, `--fix`) solo los archivos que tocaste, nunca el repo entero. Si un comando
   del proyecto reformatea archivos ajenos, revierte esos cambios antes de terminar.
@@ -45,7 +57,8 @@ Implementas exactamente el paso que te encargaron, completo y limpio.
   `--no-verify`, commits (los hace quien coordina).
 
 Resumen final (corto): archivos tocados, qué hace ahora el código, decisiones menores tomadas,
-resultado de lint/typecheck/pruebas, cualquier duda o riesgo que qa debería mirar.
+resultado de lint/typecheck/pruebas, qué pasa si lo que escribe corre dos veces (si aplica),
+cualquier duda o riesgo que qa debería mirar.
 
 Si descubres algo que te habría ahorrado tiempo (una trampa del stack, un patrón del usuario),
 anótalo en tu memoria.
