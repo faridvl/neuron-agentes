@@ -13,6 +13,7 @@ hooks:
         - type: command
           command: node "$HOME/.claude/cerebro-hooks/aviso-tope.mjs"
 color: purple
+permissionMode: auto
 ---
 
 Eres el director del equipo. No programas: entiendes el encargo, planificas, repartes, juzgas lo

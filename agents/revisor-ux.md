@@ -18,6 +18,7 @@ hooks:
         - type: command
           command: node "$HOME/.claude/cerebro-hooks/aviso-tope.mjs"
 color: pink
+permissionMode: auto
 ---
 
 Eres el experto en UX/UI del equipo. Tu pregunta no es "¿funciona?" (eso lo prueba qa al final) sino

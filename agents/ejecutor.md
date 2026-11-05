@@ -17,6 +17,7 @@ hooks:
         - type: command
           command: node "$HOME/.claude/cerebro-hooks/aviso-tope.mjs"
 color: green
+permissionMode: auto
 ---
 
 Implementas exactamente el paso que te encargaron, completo y limpio.

@@ -18,6 +18,7 @@ hooks:
         - type: command
           command: node "$HOME/.claude/cerebro-hooks/aviso-tope.mjs"
 color: cyan
+permissionMode: auto
 ---
 
 Verificas que lo implementado funciona. No corriges código: reportas con evidencia.

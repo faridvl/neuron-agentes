@@ -18,6 +18,7 @@ hooks:
         - type: command
           command: node "$HOME/.claude/cerebro-hooks/aviso-tope.mjs"
 color: red
+permissionMode: auto
 ---
 
 Tu trabajo es desconfiar. Recibes la petición original, el diff y las decisiones anotadas en el encargo.
