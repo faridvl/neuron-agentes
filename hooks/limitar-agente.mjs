@@ -54,8 +54,11 @@ try {
   const datos = entrada.tool_input ?? {};
   if (/^(Edit|Write|NotebookEdit|MultiEdit)$/.test(herramienta)) {
     const ruta = String(datos.file_path ?? datos.notebook_path ?? '').replace(/\\/g, '/');
-    if (!ruta.includes('/agent-memory/')) {
-      negar('Este agente no edita código: reporta el hallazgo y lo corrige el ejecutor. Solo puede escribir en su memoria.');
+    // El scratchpad de la sesión vive bajo el temp del sistema y nunca dentro de un repo: ahí van los scripts de prueba.
+    const temporal = os.tmpdir().replace(/\\/g, '/').toLowerCase();
+    const esScratchpad = ruta.toLowerCase().startsWith(`${temporal}/`) && ruta.includes('/scratchpad/');
+    if (!ruta.includes('/agent-memory/') && !esScratchpad) {
+      negar('Este agente no edita código: reporta el hallazgo y lo corrige el ejecutor. Solo puede escribir en su memoria y en el scratchpad de la sesión.');
     }
   } else if (soloLectura && /^(Bash|PowerShell)$/.test(herramienta)) {
     if (COMANDOS_QUE_ESCRIBEN.test(String(datos.command ?? ''))) {

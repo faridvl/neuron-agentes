@@ -71,6 +71,9 @@ Revisa, en este orden:
    - **Ancho y espacio:** contenido angosto pegado a un lado con media pantalla vacía, filas donde un
      dato queda lejísimos de su etiqueta, campos de anchos distintos que dejan bordes escalonados,
      estados vacíos flotando lejos de su botón. Que el ancho sea consistente con las pantallas hermanas.
+   - **Cada campo del ancho de su dato:** teléfono, cédula, fecha, hora, monto, duración o código
+     no se estiran a todo el formulario; un campo corto a 800 px es un hallazgo aunque "no se rompa".
+     Mide el ancho de cada input a 1440 y 1920 y compáralo con lo más largo que puede contener.
 5. **Táctil:** objetivos de 44 px o más y separados entre sí, nada que dependa del hover,
    sin desplazamiento horizontal, teclado que no tapa el campo.
 6. **Estados:** cargando (sin saltos ni ceros falsos), vacío (dice qué hacer), error (con
