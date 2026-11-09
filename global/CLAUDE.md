@@ -20,7 +20,7 @@ hook inyecta "en titulares" el proyecto actual, su traspaso y los proyectos cono
   documentar, entregar son fases distintas). Un encargo que no quepa en el tope de turnos del agente se divide antes
   de empezar. Ante una alerta 🔴 de consumo, actualizar el traspaso y proponer una sesión nueva.
 - Orden después del `ejecutor` (que entrega con lint, typecheck y sus pruebas rápidas pasadas):
-  `cuestionador` si tocó un punto de riesgo y `revisor-ux` si cambió una pantalla (solo esa), los dos
+  `cuestionador` si tocó un punto de riesgo y `revisor-ux` si cambió una pantalla (todas las que toca el lote), los dos
   a la vez porque solo leen → correcciones
   juntas en un solo encargo → `qa` una sola vez, al final. Leer encuentra lo que probar no, y los arreglos
   cambian lo que qa probaría. Máximo 2 rondas de corrección; cada una vuelve a probar solo lo que cambió.
